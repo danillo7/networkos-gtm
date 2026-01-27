@@ -17,22 +17,30 @@ import type {
   Paginated,
 } from './types';
 
-// Environment validation
+// Environment validation - graceful handling for demo mode
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
 
-if (!supabaseUrl) {
-  throw new Error('Missing SUPABASE_URL environment variable');
+// Flag to check if Supabase is configured
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+
+// Create clients only if configured
+let supabaseClient: SupabaseClient | null = null;
+let supabaseAdminClient: SupabaseClient | null = null;
+
+if (supabaseUrl && supabaseAnonKey) {
+  supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+  supabaseAdminClient = supabaseServiceKey
+    ? createClient(supabaseUrl, supabaseServiceKey)
+    : supabaseClient;
 }
 
 // Public client (for client-side usage with RLS)
-export const supabase = createClient(supabaseUrl, supabaseAnonKey || '');
+export const supabase = supabaseClient;
 
 // Service client (for server-side usage, bypasses RLS)
-export const supabaseAdmin = supabaseServiceKey
-  ? createClient(supabaseUrl, supabaseServiceKey)
-  : supabase;
+export const supabaseAdmin = supabaseAdminClient || supabaseClient;
 
 // ============================================================================
 // TYPE CONVERTERS
@@ -147,6 +155,7 @@ export function contactToDb(contact: Partial<Contact>): Record<string, unknown> 
 // ============================================================================
 
 export async function getCompany(id: string): Promise<Company | null> {
+  if (!supabaseAdmin) return null;
   const { data, error } = await supabaseAdmin
     .from('companies')
     .select('*')
@@ -158,6 +167,7 @@ export async function getCompany(id: string): Promise<Company | null> {
 }
 
 export async function getCompanyByDomain(domain: string): Promise<Company | null> {
+  if (!supabaseAdmin) return null;
   const { data, error } = await supabaseAdmin
     .from('companies')
     .select('*')
@@ -169,6 +179,7 @@ export async function getCompanyByDomain(domain: string): Promise<Company | null
 }
 
 export async function createCompany(company: Partial<Company>): Promise<Company> {
+  if (!supabaseAdmin) throw new Error('Supabase not configured');
   const dbData = companyToDb(company);
   const { data, error } = await supabaseAdmin
     .from('companies')
@@ -181,6 +192,7 @@ export async function createCompany(company: Partial<Company>): Promise<Company>
 }
 
 export async function updateCompany(id: string, updates: Partial<Company>): Promise<Company> {
+  if (!supabaseAdmin) throw new Error('Supabase not configured');
   const dbData = companyToDb(updates);
   const { data, error } = await supabaseAdmin
     .from('companies')
@@ -203,6 +215,10 @@ export async function listCompanies(options: {
 }): Promise<Paginated<Company>> {
   const { page = 1, limit = 20, industry, minScore, orderBy = 'created_at', orderDir = 'desc' } = options;
   const offset = (page - 1) * limit;
+
+  if (!supabaseAdmin) {
+    return { items: [], page, limit, total: 0, hasMore: false };
+  }
 
   let query = supabaseAdmin.from('companies').select('*', { count: 'exact' });
 
@@ -229,6 +245,7 @@ export async function listCompanies(options: {
 // ============================================================================
 
 export async function getContact(id: string): Promise<Contact | null> {
+  if (!supabaseAdmin) return null;
   const { data, error } = await supabaseAdmin
     .from('contacts')
     .select('*')
@@ -240,6 +257,7 @@ export async function getContact(id: string): Promise<Contact | null> {
 }
 
 export async function getContactsByCompany(companyId: string): Promise<Contact[]> {
+  if (!supabaseAdmin) return [];
   const { data, error } = await supabaseAdmin
     .from('contacts')
     .select('*')
@@ -251,6 +269,7 @@ export async function getContactsByCompany(companyId: string): Promise<Contact[]
 }
 
 export async function createContact(contact: Partial<Contact>): Promise<Contact> {
+  if (!supabaseAdmin) throw new Error('Supabase not configured');
   const dbData = contactToDb(contact);
   const { data, error } = await supabaseAdmin
     .from('contacts')
@@ -263,6 +282,7 @@ export async function createContact(contact: Partial<Contact>): Promise<Contact>
 }
 
 export async function updateContact(id: string, updates: Partial<Contact>): Promise<Contact> {
+  if (!supabaseAdmin) throw new Error('Supabase not configured');
   const dbData = contactToDb(updates);
   const { data, error } = await supabaseAdmin
     .from('contacts')
@@ -276,6 +296,7 @@ export async function updateContact(id: string, updates: Partial<Contact>): Prom
 }
 
 export async function findContactByEmail(email: string): Promise<Contact | null> {
+  if (!supabaseAdmin) return null;
   const { data, error } = await supabaseAdmin
     .from('contacts')
     .select('*')
@@ -291,6 +312,7 @@ export async function findContactByEmail(email: string): Promise<Contact | null>
 // ============================================================================
 
 export async function createPitch(pitch: Partial<GeneratedPitch>): Promise<GeneratedPitch> {
+  if (!supabaseAdmin) throw new Error('Supabase not configured');
   const dbData = {
     company_id: pitch.companyId,
     contact_id: pitch.contactId || null,
@@ -320,6 +342,7 @@ export async function createPitch(pitch: Partial<GeneratedPitch>): Promise<Gener
 }
 
 export async function getPitchesByCompany(companyId: string): Promise<GeneratedPitch[]> {
+  if (!supabaseAdmin) return [];
   const { data, error } = await supabaseAdmin
     .from('pitches')
     .select('*')
@@ -335,6 +358,7 @@ export async function getPitchesByCompany(companyId: string): Promise<GeneratedP
 // ============================================================================
 
 export async function logEnrichment(log: Omit<EnrichmentLog, 'id' | 'createdAt'>): Promise<EnrichmentLog> {
+  if (!supabaseAdmin) throw new Error('Supabase not configured');
   const { data, error } = await supabaseAdmin
     .from('enrichment_logs')
     .insert({
@@ -359,6 +383,7 @@ export async function logEnrichment(log: Omit<EnrichmentLog, 'id' | 'createdAt'>
 // ============================================================================
 
 export async function createOpportunity(opportunity: Partial<Opportunity>): Promise<Opportunity> {
+  if (!supabaseAdmin) throw new Error('Supabase not configured');
   const { data, error } = await supabaseAdmin
     .from('opportunities')
     .insert({
@@ -382,6 +407,7 @@ export async function createOpportunity(opportunity: Partial<Opportunity>): Prom
 }
 
 export async function updateOpportunity(id: string, updates: Partial<Opportunity>): Promise<Opportunity> {
+  if (!supabaseAdmin) throw new Error('Supabase not configured');
   const dbData: Record<string, unknown> = {};
 
   if (updates.stage !== undefined) dbData.stage = updates.stage;
@@ -413,6 +439,10 @@ export async function listOpportunities(options: {
   const { stage, page = 1, limit = 50 } = options;
   const offset = (page - 1) * limit;
 
+  if (!supabaseAdmin) {
+    return { items: [], page, limit, total: 0, hasMore: false };
+  }
+
   let query = supabaseAdmin.from('opportunities').select('*', { count: 'exact' });
   if (stage) query = query.eq('stage', stage);
 
@@ -436,6 +466,7 @@ export async function listOpportunities(options: {
 // ============================================================================
 
 export async function createSequence(sequence: Partial<OutreachSequence>): Promise<OutreachSequence> {
+  if (!supabaseAdmin) throw new Error('Supabase not configured');
   const { data, error } = await supabaseAdmin
     .from('outreach_sequences')
     .insert({
@@ -458,6 +489,7 @@ export async function updateSequenceStatus(
   id: string,
   status: OutreachSequence['status']
 ): Promise<OutreachSequence> {
+  if (!supabaseAdmin) throw new Error('Supabase not configured');
   const { data, error } = await supabaseAdmin
     .from('outreach_sequences')
     .update({ status, updated_at: new Date().toISOString() })
@@ -479,6 +511,16 @@ export async function getAnalyticsCounts(): Promise<{
   pitches: number;
   opportunities: number;
 }> {
+  // Return mock data if Supabase is not configured
+  if (!isSupabaseConfigured || !supabaseAdmin) {
+    return {
+      companies: 127,
+      contacts: 342,
+      pitches: 89,
+      opportunities: 45,
+    };
+  }
+
   const [companies, contacts, pitches, opportunities] = await Promise.all([
     supabaseAdmin.from('companies').select('id', { count: 'exact', head: true }),
     supabaseAdmin.from('contacts').select('id', { count: 'exact', head: true }),
@@ -495,6 +537,15 @@ export async function getAnalyticsCounts(): Promise<{
 }
 
 export async function getRecentActivity(limit: number = 20): Promise<unknown[]> {
+  // Return mock data if Supabase is not configured
+  if (!isSupabaseConfigured || !supabaseAdmin) {
+    return [
+      { entity_id: '1', activity_type: 'company_created', description: 'Added TechCorp to research pipeline', entity_type: 'company', created_at: new Date().toISOString() },
+      { entity_id: '2', activity_type: 'pitch_generated', description: 'Generated pitch for DataFlow', entity_type: 'pitch', created_at: new Date(Date.now() - 3600000).toISOString() },
+      { entity_id: '3', activity_type: 'email_sent', description: 'Outreach email sent to AIStart', entity_type: 'contact', created_at: new Date(Date.now() - 7200000).toISOString() },
+    ].slice(0, limit);
+  }
+
   const { data, error } = await supabaseAdmin
     .from('activity_feed')
     .select('*')

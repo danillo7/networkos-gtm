@@ -3,7 +3,7 @@
  * Aggregates metrics and generates insights
  */
 
-import { supabaseAdmin, getAnalyticsCounts, getRecentActivity } from '../lib/supabase';
+import { supabaseAdmin, getAnalyticsCounts, getRecentActivity, isSupabaseConfigured } from '../lib/supabase';
 import type {
   AnalyticsSummary,
   DashboardMetrics,
@@ -13,6 +13,27 @@ import type {
   Opportunity,
   Company,
 } from '../lib/types';
+
+// Mock data for demo mode when Supabase is not configured
+const MOCK_DASHBOARD_METRICS: DashboardMetrics = {
+  totalCompanies: 127,
+  totalContacts: 342,
+  activeSequences: 12,
+  pipelineValue: 2450000,
+  averageAIScore: 74,
+  enrichmentSuccessRate: 0.89,
+  pitchEngagementRate: 0.34,
+  weekOverWeekGrowth: { companies: 15, contacts: 23, opportunities: 8 },
+  recentActivity: [
+    { id: '1', type: 'Email Sent', description: 'Outreach to Sarah Chen at TechCorp', timestamp: new Date() },
+    { id: '2', type: 'Stage Changed', description: 'DataFlow moved to Demo stage', timestamp: new Date(Date.now() - 3600000) },
+    { id: '3', type: 'Note Added', description: 'Research completed for AIStart', timestamp: new Date(Date.now() - 7200000) },
+  ],
+  urgentActions: [
+    { type: 'high_score_lead', entityType: 'company', entityId: '1', message: 'High-scoring lead: TechCorp (Score: 92)', priority: 'high' },
+    { type: 'follow_up_due', entityType: 'opportunity', entityId: '2', message: 'Follow-up due for DataFlow', priority: 'medium', dueAt: new Date() },
+  ],
+};
 
 // Analytics configuration
 const ANALYTICS_CONFIG = {
@@ -34,6 +55,11 @@ const ANALYTICS_CONFIG = {
  * Get dashboard metrics for the main view
  */
 export async function getDashboardMetrics(): Promise<DashboardMetrics> {
+  // Return mock data if Supabase is not configured (demo mode)
+  if (!isSupabaseConfigured) {
+    return MOCK_DASHBOARD_METRICS;
+  }
+
   // Get counts
   const counts = await getAnalyticsCounts();
 
@@ -81,6 +107,35 @@ export async function getAnalyticsSummary(
   const days = ANALYTICS_CONFIG.periods[period];
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - days);
+
+  // Return mock data if Supabase is not configured (demo mode)
+  if (!isSupabaseConfigured) {
+    return {
+      period,
+      startDate,
+      endDate: new Date(),
+      metrics: {
+        companiesResearched: 45,
+        contactsFound: 128,
+        pitchesGenerated: 67,
+        emailsSent: 234,
+        openRate: 0.42,
+        replyRate: 0.12,
+        meetingsBooked: 18,
+        opportunities: 12,
+        pipelineValue: 850000,
+        conversionRate: 0.28,
+      },
+      topPerformingPitches: [],
+      topOpportunities: [],
+      aiInsights: [
+        'Strong contact discovery: 2.8 contacts per company researched',
+        'Excellent email open rate: 42%',
+        'Great reply rate: 12%',
+        'Good email-to-meeting conversion: 7.7%',
+      ],
+    };
+  }
 
   const [
     companiesResearched,
@@ -134,6 +189,7 @@ export async function getAnalyticsSummary(
 // Helper functions for metrics
 
 async function getActiveSequencesCount(): Promise<number> {
+  if (!supabaseAdmin) return 0;
   const { count } = await supabaseAdmin
     .from('outreach_sequences')
     .select('id', { count: 'exact', head: true })
@@ -143,6 +199,7 @@ async function getActiveSequencesCount(): Promise<number> {
 }
 
 async function getPipelineValue(): Promise<number> {
+  if (!supabaseAdmin) return 0;
   const { data } = await supabaseAdmin
     .from('opportunities')
     .select('value')
@@ -152,6 +209,7 @@ async function getPipelineValue(): Promise<number> {
 }
 
 async function getAverageAIScore(): Promise<number> {
+  if (!supabaseAdmin) return 0;
   const { data } = await supabaseAdmin
     .from('companies')
     .select('ai_score')
@@ -176,6 +234,7 @@ async function getAverageAIScore(): Promise<number> {
 }
 
 async function getEnrichmentSuccessRate(): Promise<number> {
+  if (!supabaseAdmin) return 0;
   const { data } = await supabaseAdmin
     .from('enrichment_logs')
     .select('status')
@@ -188,6 +247,7 @@ async function getEnrichmentSuccessRate(): Promise<number> {
 }
 
 async function getPitchEngagementRate(): Promise<number> {
+  if (!supabaseAdmin) return 0;
   const { data } = await supabaseAdmin
     .from('pitches')
     .select('feedback')
@@ -212,6 +272,7 @@ async function getWeekOverWeekGrowth(): Promise<{
   contacts: number;
   opportunities: number;
 }> {
+  if (!supabaseAdmin) return { companies: 0, contacts: 0, opportunities: 0 };
   const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
 
@@ -241,6 +302,7 @@ async function getWeekOverWeekGrowth(): Promise<{
 }
 
 async function getUrgentActions(): Promise<UrgentAction[]> {
+  if (!supabaseAdmin) return [];
   const actions: UrgentAction[] = [];
   const now = new Date();
 
@@ -336,6 +398,7 @@ function mapActivityType(type: string): Activity['type'] {
 }
 
 async function getCompaniesResearchedCount(since: Date): Promise<number> {
+  if (!supabaseAdmin) return 0;
   const { count } = await supabaseAdmin
     .from('companies')
     .select('id', { count: 'exact', head: true })
@@ -345,6 +408,7 @@ async function getCompaniesResearchedCount(since: Date): Promise<number> {
 }
 
 async function getContactsFoundCount(since: Date): Promise<number> {
+  if (!supabaseAdmin) return 0;
   const { count } = await supabaseAdmin
     .from('contacts')
     .select('id', { count: 'exact', head: true })
@@ -354,6 +418,7 @@ async function getContactsFoundCount(since: Date): Promise<number> {
 }
 
 async function getPitchesGeneratedCount(since: Date): Promise<number> {
+  if (!supabaseAdmin) return 0;
   const { count } = await supabaseAdmin
     .from('pitches')
     .select('id', { count: 'exact', head: true })
@@ -367,6 +432,7 @@ async function getEmailMetrics(since: Date): Promise<{
   openRate: number;
   replyRate: number;
 }> {
+  if (!supabaseAdmin) return { sent: 0, openRate: 0, replyRate: 0 };
   const { data } = await supabaseAdmin
     .from('pitches')
     .select('feedback')
@@ -402,6 +468,7 @@ async function getEmailMetrics(since: Date): Promise<{
 }
 
 async function getMeetingsCount(since: Date): Promise<number> {
+  if (!supabaseAdmin) return 0;
   const { count } = await supabaseAdmin
     .from('opportunities')
     .select('id', { count: 'exact', head: true })
@@ -416,6 +483,7 @@ async function getOpportunitiesData(since: Date): Promise<{
   value: number;
   conversionRate: number;
 }> {
+  if (!supabaseAdmin) return { count: 0, value: 0, conversionRate: 0 };
   const { data } = await supabaseAdmin
     .from('opportunities')
     .select('stage, value')
@@ -439,6 +507,7 @@ async function getOpportunitiesData(since: Date): Promise<{
 }
 
 async function getTopPerformingPitches(since: Date): Promise<GeneratedPitch[]> {
+  if (!supabaseAdmin) return [];
   const { data } = await supabaseAdmin
     .from('pitches')
     .select('*')
@@ -451,6 +520,7 @@ async function getTopPerformingPitches(since: Date): Promise<GeneratedPitch[]> {
 }
 
 async function getTopOpportunities(): Promise<Opportunity[]> {
+  if (!supabaseAdmin) return [];
   const { data } = await supabaseAdmin
     .from('opportunities')
     .select('*')
