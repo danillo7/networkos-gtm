@@ -1,5 +1,6 @@
 /**
- * NetworkOS - Main Dashboard Page
+ * NetworkOS - AI-First GTM Platform
+ * Apple-inspired Dark Mode Design
  */
 
 'use client';
@@ -17,10 +18,12 @@ import {
   Search,
   Plus,
   Menu,
+  TrendingUp,
+  Zap,
+  Globe,
+  Clock,
+  ChevronRight,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/utils/cn';
 
 // Navigation items
@@ -37,107 +40,133 @@ const NAV_ITEMS = [
 export default function Home() {
   const [activeTab, setActiveTab] = React.useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
+  const [currentTime, setCurrentTime] = React.useState(new Date());
+
+  React.useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 60000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const greeting = React.useMemo(() => {
+    const hour = currentTime.getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  }, [currentTime]);
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-black">
       {/* Sidebar */}
       <aside
         className={cn(
-          'flex flex-col border-r bg-card transition-all duration-300',
-          sidebarOpen ? 'w-64' : 'w-16'
+          'sidebar transition-all duration-300',
+          sidebarOpen ? 'w-72' : 'w-20'
         )}
       >
         {/* Logo */}
-        <div className="flex h-16 items-center justify-between border-b px-4">
+        <div className="flex h-16 items-center justify-between px-5 border-b border-white/[0.08]">
           {sidebarOpen && (
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                <Sparkles className="h-5 w-5 text-primary-foreground" />
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl gradient-bg">
+                <Sparkles className="h-5 w-5 text-white" />
               </div>
-              <span className="font-semibold">NetworkOS</span>
+              <div>
+                <span className="font-semibold text-white">NetworkOS</span>
+                <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 text-white/60">
+                  GTM
+                </span>
+              </div>
             </div>
           )}
-          <Button
-            variant="ghost"
-            size="icon-sm"
+          <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
           >
-            <Menu className="h-4 w-4" />
-          </Button>
+            <Menu className="h-4 w-4 text-white/60" />
+          </button>
         </div>
 
+        {/* Greeting Card */}
+        {sidebarOpen && (
+          <div className="mx-4 mt-4 p-4 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/[0.08]">
+            <p className="text-white/60 text-sm">{greeting}</p>
+            <p className="text-white font-medium mt-0.5">Welcome back!</p>
+            <p className="text-white/40 text-xs mt-2 flex items-center gap-1.5">
+              <Clock className="h-3 w-3" />
+              {currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+            </p>
+          </div>
+        )}
+
         {/* Navigation */}
-        <nav className="flex-1 space-y-1 p-2">
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto scrollbar-hide">
           {NAV_ITEMS.map((item) => (
-            <Button
+            <button
               key={item.id}
-              variant={activeTab === item.id ? 'secondary' : 'ghost'}
-              className={cn(
-                'w-full justify-start',
-                !sidebarOpen && 'justify-center px-2'
-              )}
               onClick={() => setActiveTab(item.id)}
+              className={cn(
+                'nav-item w-full',
+                activeTab === item.id && 'active',
+                !sidebarOpen && 'justify-center px-3'
+              )}
             >
-              <item.icon className="h-4 w-4" />
-              {sidebarOpen && <span className="ml-2">{item.label}</span>}
-            </Button>
+              <item.icon className="h-[18px] w-[18px]" />
+              {sidebarOpen && <span>{item.label}</span>}
+            </button>
           ))}
         </nav>
 
         {/* Settings */}
-        <div className="border-t p-2">
-          <Button
-            variant="ghost"
+        <div className="px-3 py-4 border-t border-white/[0.08]">
+          <button
             className={cn(
-              'w-full justify-start',
-              !sidebarOpen && 'justify-center px-2'
+              'nav-item w-full',
+              !sidebarOpen && 'justify-center px-3'
             )}
           >
-            <Settings className="h-4 w-4" />
-            {sidebarOpen && <span className="ml-2">Settings</span>}
-          </Button>
+            <Settings className="h-[18px] w-[18px]" />
+            {sidebarOpen && <span>Settings</span>}
+          </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto bg-black">
         {/* Header */}
-        <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b bg-card px-6">
+        <header className="app-header">
           <div>
-            <h1 className="text-xl font-semibold capitalize">{activeTab}</h1>
-            <p className="text-sm text-muted-foreground">
-              AI-First GTM Platform
-            </p>
+            <h1 className="text-xl font-semibold text-white capitalize">{activeTab}</h1>
+            <p className="text-sm text-white/50">AI-First GTM Platform</p>
           </div>
 
           <div className="flex items-center gap-4">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
               <input
                 type="text"
                 placeholder="Search companies, contacts..."
-                className="h-9 w-64 rounded-md border bg-background pl-9 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                className="search-input w-72"
               />
             </div>
 
             {/* Quick Actions */}
-            <Button size="sm">
+            <button className="btn-primary">
               <Plus className="mr-2 h-4 w-4" />
               Add Lead
-            </Button>
+            </button>
           </div>
         </header>
 
         {/* Page Content */}
         <div className="p-6">
           {activeTab === 'dashboard' && <DashboardView />}
-          {activeTab === 'companies' && <CompaniesView />}
-          {activeTab === 'contacts' && <ContactsView />}
-          {activeTab === 'pipeline' && <PipelineView />}
-          {activeTab === 'pitches' && <PitchesView />}
-          {activeTab === 'outreach' && <OutreachView />}
-          {activeTab === 'analytics' && <AnalyticsView />}
+          {activeTab === 'companies' && <PlaceholderView title="Companies" description="Manage and research target companies" />}
+          {activeTab === 'contacts' && <PlaceholderView title="Contacts" description="Decision makers and influencers" />}
+          {activeTab === 'pipeline' && <PlaceholderView title="Pipeline" description="Track opportunities through stages" />}
+          {activeTab === 'pitches' && <PlaceholderView title="Pitches" description="AI-generated personalized outreach" />}
+          {activeTab === 'outreach' && <PlaceholderView title="Outreach" description="Manage outreach sequences" />}
+          {activeTab === 'analytics' && <PlaceholderView title="Analytics" description="Performance metrics and insights" />}
         </div>
       </main>
     </div>
@@ -150,232 +179,227 @@ function DashboardView() {
     <div className="space-y-6">
       {/* Quick Stats */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="Total Companies" value="127" change="+12%" positive />
-        <StatCard title="Active Contacts" value="438" change="+8%" positive />
-        <StatCard title="Pipeline Value" value="$2.4M" change="+23%" positive />
-        <StatCard title="Avg AI Score" value="72" change="+5%" positive />
+        <StatCard
+          icon={<Building2 className="h-5 w-5" />}
+          iconBg="bg-blue-500/20"
+          iconColor="text-blue-400"
+          title="Total Companies"
+          value="127"
+          change="+12%"
+          positive
+        />
+        <StatCard
+          icon={<Users className="h-5 w-5" />}
+          iconBg="bg-green-500/20"
+          iconColor="text-green-400"
+          title="Active Contacts"
+          value="438"
+          change="+8%"
+          positive
+        />
+        <StatCard
+          icon={<Target className="h-5 w-5" />}
+          iconBg="bg-purple-500/20"
+          iconColor="text-purple-400"
+          title="Pipeline Value"
+          value="$2.4M"
+          change="+23%"
+          positive
+        />
+        <StatCard
+          icon={<Zap className="h-5 w-5" />}
+          iconBg="bg-orange-500/20"
+          iconColor="text-orange-400"
+          title="Avg AI Score"
+          value="72"
+          change="+5%"
+          positive
+        />
       </div>
 
       {/* Quick Actions */}
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="cursor-pointer hover:shadow-md transition-shadow">
-          <CardContent className="flex items-center gap-4 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
-              <Search className="h-6 w-6 text-blue-600" />
-            </div>
-            <div>
-              <h3 className="font-semibold">Research Company</h3>
-              <p className="text-sm text-muted-foreground">
-                Deep AI-powered company analysis
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="cursor-pointer hover:shadow-md transition-shadow">
-          <CardContent className="flex items-center gap-4 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-100">
-              <Sparkles className="h-6 w-6 text-purple-600" />
-            </div>
-            <div>
-              <h3 className="font-semibold">Generate Pitch</h3>
-              <p className="text-sm text-muted-foreground">
-                AI-crafted personalized outreach
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="cursor-pointer hover:shadow-md transition-shadow">
-          <CardContent className="flex items-center gap-4 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100">
-              <Users className="h-6 w-6 text-green-600" />
-            </div>
-            <div>
-              <h3 className="font-semibold">Find Contacts</h3>
-              <p className="text-sm text-muted-foreground">
-                Discover decision makers
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+        <ActionCard
+          icon={<Search className="h-6 w-6" />}
+          iconBg="bg-blue-500/20"
+          iconColor="text-blue-400"
+          title="Research Company"
+          description="Deep AI-powered company analysis"
+        />
+        <ActionCard
+          icon={<Sparkles className="h-6 w-6" />}
+          iconBg="bg-purple-500/20"
+          iconColor="text-purple-400"
+          title="Generate Pitch"
+          description="AI-crafted personalized outreach"
+        />
+        <ActionCard
+          icon={<Users className="h-6 w-6" />}
+          iconBg="bg-green-500/20"
+          iconColor="text-green-400"
+          title="Find Contacts"
+          description="Discover decision makers"
+        />
       </div>
 
       {/* Recent Activity */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
-          <CardDescription>Latest actions and updates</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <ActivityItem
-              icon={<Building2 className="h-4 w-4" />}
-              title="New company added: Acme Corp"
-              time="2 minutes ago"
-            />
-            <ActivityItem
-              icon={<Sparkles className="h-4 w-4" />}
-              title="Pitch generated for TechStart Inc"
-              time="15 minutes ago"
-            />
-            <ActivityItem
-              icon={<Users className="h-4 w-4" />}
-              title="3 contacts found at DataFlow"
-              time="1 hour ago"
-            />
-            <ActivityItem
-              icon={<Target className="h-4 w-4" />}
-              title="Opportunity moved to 'Demo Done'"
-              time="2 hours ago"
-            />
+      <div className="glass-card p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-semibold text-white">Recent Activity</h3>
+            <p className="text-sm text-white/50">Latest actions and updates</p>
           </div>
-        </CardContent>
-      </Card>
+          <button className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1">
+            View all <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="space-y-1">
+          <ActivityItem
+            icon={<Building2 className="h-4 w-4" />}
+            iconBg="bg-blue-500/20"
+            title="New company added: Acme Corp"
+            time="2 minutes ago"
+          />
+          <ActivityItem
+            icon={<Sparkles className="h-4 w-4" />}
+            iconBg="bg-purple-500/20"
+            title="Pitch generated for TechStart Inc"
+            time="15 minutes ago"
+          />
+          <ActivityItem
+            icon={<Users className="h-4 w-4" />}
+            iconBg="bg-green-500/20"
+            title="3 contacts found at DataFlow"
+            time="1 hour ago"
+          />
+          <ActivityItem
+            icon={<Target className="h-4 w-4" />}
+            iconBg="bg-orange-500/20"
+            title="Opportunity moved to 'Demo Done'"
+            time="2 hours ago"
+          />
+        </div>
+      </div>
+
+      {/* AI Insights */}
+      <div className="glass-card p-6 glow">
+        <div className="flex items-start gap-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl gradient-bg">
+            <Zap className="h-6 w-6 text-white" />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-white">AI Insights</h3>
+            <p className="text-sm text-white/50 mt-1">
+              Based on your pipeline analysis, we recommend focusing on the 3 high-score leads
+              that haven&apos;t been contacted in the last week. The best time to reach out is
+              Tuesday morning between 9-11 AM.
+            </p>
+            <button className="mt-4 btn-primary text-sm">
+              <Sparkles className="mr-2 h-4 w-4" />
+              Generate Action Plan
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-// Placeholder views
-function CompaniesView() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Companies</CardTitle>
-        <CardDescription>Manage and research target companies</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p className="text-muted-foreground">
-          Import the CompanyCard component and list companies here.
-        </p>
-      </CardContent>
-    </Card>
-  );
-}
-
-function ContactsView() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Contacts</CardTitle>
-        <CardDescription>Decision makers and influencers</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p className="text-muted-foreground">
-          Import the ContactFinder component to discover and manage contacts.
-        </p>
-      </CardContent>
-    </Card>
-  );
-}
-
-function PipelineView() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Pipeline</CardTitle>
-        <CardDescription>Track opportunities through stages</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p className="text-muted-foreground">
-          Import the PipelineManager component for kanban-style pipeline management.
-        </p>
-      </CardContent>
-    </Card>
-  );
-}
-
-function PitchesView() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Pitches</CardTitle>
-        <CardDescription>AI-generated personalized outreach</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p className="text-muted-foreground">
-          Import the PitchGenerator component to create compelling pitches.
-        </p>
-      </CardContent>
-    </Card>
-  );
-}
-
-function OutreachView() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Outreach</CardTitle>
-        <CardDescription>Manage outreach sequences</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p className="text-muted-foreground">
-          Configure and monitor multi-step outreach campaigns.
-        </p>
-      </CardContent>
-    </Card>
-  );
-}
-
-function AnalyticsView() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Analytics</CardTitle>
-        <CardDescription>Performance metrics and insights</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p className="text-muted-foreground">
-          Import the InsightsDashboard component for comprehensive analytics.
-        </p>
-      </CardContent>
-    </Card>
-  );
-}
-
-// Helper components
+// Stat Card Component
 function StatCard({
+  icon,
+  iconBg,
+  iconColor,
   title,
   value,
   change,
   positive,
 }: {
+  icon: React.ReactNode;
+  iconBg: string;
+  iconColor: string;
   title: string;
   value: string;
   change: string;
   positive: boolean;
 }) {
   return (
-    <Card>
-      <CardContent className="p-6">
-        <p className="text-sm text-muted-foreground">{title}</p>
-        <div className="flex items-baseline gap-2 mt-2">
-          <span className="text-2xl font-bold">{value}</span>
-          <Badge variant={positive ? 'success' : 'destructive'} className="text-xs">
-            {change}
-          </Badge>
-        </div>
-      </CardContent>
-    </Card>
+    <div className="stat-card">
+      <div className={cn('stat-icon', iconBg, iconColor)}>{icon}</div>
+      <p className="text-sm text-white/50">{title}</p>
+      <div className="flex items-baseline gap-2 mt-1">
+        <span className="stat-value text-white">{value}</span>
+        <span className={cn(
+          'text-xs font-medium px-1.5 py-0.5 rounded-full',
+          positive ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+        )}>
+          {change}
+        </span>
+      </div>
+    </div>
   );
 }
 
+// Action Card Component
+function ActionCard({
+  icon,
+  iconBg,
+  iconColor,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  iconBg: string;
+  iconColor: string;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="action-card glow">
+      <div className={cn('flex h-12 w-12 items-center justify-center rounded-2xl mb-4', iconBg, iconColor)}>
+        {icon}
+      </div>
+      <h3 className="font-semibold text-white">{title}</h3>
+      <p className="text-sm text-white/50 mt-1">{description}</p>
+    </div>
+  );
+}
+
+// Activity Item Component
 function ActivityItem({
   icon,
+  iconBg,
   title,
   time,
 }: {
   icon: React.ReactNode;
+  iconBg: string;
   title: string;
   time: string;
 }) {
   return (
-    <div className="flex items-center gap-3">
-      <div className="text-muted-foreground">{icon}</div>
-      <div className="flex-1">
-        <p className="text-sm">{title}</p>
-        <p className="text-xs text-muted-foreground">{time}</p>
+    <div className="activity-item">
+      <div className={cn('flex h-8 w-8 items-center justify-center rounded-lg text-white/70', iconBg)}>
+        {icon}
       </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm text-white/90 truncate">{title}</p>
+        <p className="text-xs text-white/40">{time}</p>
+      </div>
+    </div>
+  );
+}
+
+// Placeholder View Component
+function PlaceholderView({ title, description }: { title: string; description: string }) {
+  return (
+    <div className="glass-card p-8 text-center">
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl gradient-bg mx-auto mb-4">
+        <Globe className="h-8 w-8 text-white" />
+      </div>
+      <h2 className="text-xl font-semibold text-white">{title}</h2>
+      <p className="text-white/50 mt-2 max-w-md mx-auto">{description}</p>
+      <p className="text-white/30 text-sm mt-4">Coming soon...</p>
     </div>
   );
 }
