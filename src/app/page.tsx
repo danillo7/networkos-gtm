@@ -192,10 +192,15 @@ export default function Home() {
 // Dashboard View with real API integration
 function DashboardView({ onNavigate }: { onNavigate: (tab: string) => void }) {
   const { data: metrics, loading, error, fetch, reset } = useDashboardMetrics();
+  const hasFetched = React.useRef(false);
 
   React.useEffect(() => {
-    fetch();
-  }, [fetch]);
+    // Only fetch once on mount
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+      fetch();
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="space-y-6">
@@ -413,10 +418,15 @@ function DashboardView({ onNavigate }: { onNavigate: (tab: string) => void }) {
 // Analytics View
 function AnalyticsView() {
   const { data: metrics, loading, error, fetch } = useDashboardMetrics();
+  const hasFetched = React.useRef(false);
 
   React.useEffect(() => {
-    fetch();
-  }, [fetch]);
+    // Only fetch once on mount
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+      fetch();
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loading) {
     return (

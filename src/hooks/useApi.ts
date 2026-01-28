@@ -1,8 +1,9 @@
 /**
  * Custom hooks for API calls
+ * Fixed to prevent infinite re-render loops
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 
 type ApiState<T> = {
   data: T | null;
@@ -17,10 +18,19 @@ export function useApi<T>() {
     error: null,
   });
 
+  // Use ref to prevent stale closure issues
+  const stateRef = useRef(state);
+  stateRef.current = state;
+
   const execute = useCallback(async (
     url: string,
     options?: RequestInit
   ): Promise<T | null> => {
+    // Prevent duplicate requests while loading
+    if (stateRef.current.loading) {
+      return stateRef.current.data;
+    }
+
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
@@ -44,7 +54,7 @@ export function useApi<T>() {
       setState({ data: null, loading: false, error: errorMessage });
       return null;
     }
-  }, []);
+  }, []); // No dependencies - function is stable
 
   const reset = useCallback(() => {
     setState({ data: null, loading: false, error: null });
@@ -53,26 +63,27 @@ export function useApi<T>() {
   return { ...state, execute, reset };
 }
 
-// Specific API hooks
+// Specific API hooks - all with stable callbacks
+
 export function useResearchCompany() {
-  const api = useApi<{
+  const { data, loading, error, execute, reset } = useApi<{
     company: Record<string, unknown>;
     signals: Array<unknown>;
     voiceAIOpportunities: Array<unknown>;
   }>();
 
   const research = useCallback(async (domain: string, depth: 'basic' | 'standard' | 'deep' = 'standard') => {
-    return api.execute('/api/ai/research', {
+    return execute('/api/ai/research', {
       method: 'POST',
       body: JSON.stringify({ domain, depth }),
     });
-  }, [api]);
+  }, [execute]); // Only depends on stable execute
 
-  return { ...api, research };
+  return { data, loading, error, reset, research };
 }
 
 export function useScoreOpportunity() {
-  const api = useApi<{
+  const { data, loading, error, execute, reset } = useApi<{
     score: {
       overall: number;
       companyFit: number;
@@ -86,17 +97,17 @@ export function useScoreOpportunity() {
   }>();
 
   const score = useCallback(async (company: unknown, options?: { contacts?: unknown[]; signals?: unknown[] }) => {
-    return api.execute('/api/ai/score', {
+    return execute('/api/ai/score', {
       method: 'POST',
       body: JSON.stringify({ company, ...options }),
     });
-  }, [api]);
+  }, [execute]);
 
-  return { ...api, score };
+  return { data, loading, error, reset, score };
 }
 
 export function useFindContacts() {
-  const api = useApi<{
+  const { data, loading, error, execute, reset } = useApi<{
     contacts: Array<{
       firstName: string;
       lastName: string;
@@ -117,17 +128,17 @@ export function useFindContacts() {
     targetRoles?: string[];
     maxContacts?: number;
   }) => {
-    return api.execute('/api/ai/contacts', {
+    return execute('/api/ai/contacts', {
       method: 'POST',
       body: JSON.stringify(params),
     });
-  }, [api]);
+  }, [execute]);
 
-  return { ...api, find };
+  return { data, loading, error, reset, find };
 }
 
 export function useGeneratePitch() {
-  const api = useApi<{
+  const { data, loading, error, execute, reset } = useApi<{
     pitch: {
       id: string;
       type: string;
@@ -146,17 +157,17 @@ export function useGeneratePitch() {
     length?: 'short' | 'medium' | 'long';
     focusProducts?: string[];
   }) => {
-    return api.execute('/api/ai/pitch', {
+    return execute('/api/ai/pitch', {
       method: 'POST',
       body: JSON.stringify(params),
     });
-  }, [api]);
+  }, [execute]);
 
-  return { ...api, generate };
+  return { data, loading, error, reset, generate };
 }
 
 export function useOrchestrate() {
-  const api = useApi<{
+  const { data, loading, error, execute, reset } = useApi<{
     company?: unknown;
     contacts?: unknown[];
     score?: { overall: number };
@@ -171,17 +182,17 @@ export function useOrchestrate() {
     domain?: string;
     options?: Record<string, unknown>;
   }) => {
-    return api.execute('/api/ai/orchestrate', {
+    return execute('/api/ai/orchestrate', {
       method: 'POST',
       body: JSON.stringify(params),
     });
-  }, [api]);
+  }, [execute]);
 
-  return { ...api, orchestrate };
+  return { data, loading, error, reset, orchestrate };
 }
 
 export function useDashboardMetrics() {
-  const api = useApi<{
+  const { data, loading, error, execute, reset } = useApi<{
     totalCompanies: number;
     totalContacts: number;
     activeSequences: number;
@@ -200,10 +211,10 @@ export function useDashboardMetrics() {
   }>();
 
   const fetch = useCallback(async () => {
-    return api.execute('/api/analytics/summary', {
+    return execute('/api/analytics/summary', {
       method: 'GET',
     });
-  }, [api]);
+  }, [execute]); // Only depends on stable execute
 
-  return { ...api, fetch };
+  return { data, loading, error, reset, fetch };
 }
