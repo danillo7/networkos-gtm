@@ -176,7 +176,7 @@ export function ContactFinderView() {
               </button>
 
               {showCompanyDropdown && (
-                <div className="absolute top-full left-0 right-0 mt-2 z-10 rounded-xl bg-[#1c1c1e] border border-theme shadow-xl overflow-hidden">
+                <div className="absolute top-full left-0 right-0 mt-2 z-10 rounded-xl dropdown-bg border border-theme shadow-xl overflow-hidden">
                   {SAMPLE_COMPANIES.map((company) => (
                     <button
                       key={company.id}

@@ -75,6 +75,45 @@
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
     --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.7);
     --shadow-glow: 0 0 30px rgba(10, 132, 255, 0.3);
+
+    /* Status colors - Dark Mode (default) */
+    --status-hot-bg: rgba(239, 68, 68, 0.2);
+    --status-hot-text: #f87171;
+    --status-warm-bg: rgba(249, 115, 22, 0.2);
+    --status-warm-text: #fb923c;
+    --status-cold-bg: rgba(59, 130, 246, 0.2);
+    --status-cold-text: #60a5fa;
+
+    /* Icon backgrounds - Dark Mode */
+    --icon-blue-bg: rgba(10, 132, 255, 0.2);
+    --icon-green-bg: rgba(48, 209, 88, 0.2);
+    --icon-purple-bg: rgba(191, 90, 242, 0.2);
+    --icon-orange-bg: rgba(255, 159, 10, 0.2);
+    --icon-red-bg: rgba(255, 69, 58, 0.2);
+    --icon-yellow-bg: rgba(255, 214, 10, 0.2);
+
+    /* Icon colors - Dark Mode */
+    --icon-blue: #0a84ff;
+    --icon-green: #30d158;
+    --icon-purple: #bf5af2;
+    --icon-orange: #ff9f0a;
+    --icon-red: #ff453a;
+    --icon-yellow: #ffd60a;
+
+    /* Score colors - Dark Mode */
+    --score-high-bg: rgba(34, 197, 94, 0.2);
+    --score-high-text: #4ade80;
+    --score-medium-bg: rgba(234, 179, 8, 0.2);
+    --score-medium-text: #facc15;
+    --score-low-bg: rgba(239, 68, 68, 0.2);
+    --score-low-text: #f87171;
+
+    /* Tooltip/Dropdown background - Dark Mode */
+    --dropdown-bg: #1c1c1e;
+
+    /* System orange/yellow for dark mode */
+    --system-orange: #ff9f0a;
+    --system-yellow: #ffd60a;
   }
 
   [data-theme="light"] {
@@ -167,47 +206,6 @@
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
     --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.15);
     --shadow-glow: 0 0 30px rgba(0, 122, 255, 0.2);
-  }
-
-  :root {
-    /* Status colors - Dark Mode (default) */
-    --status-hot-bg: rgba(239, 68, 68, 0.2);
-    --status-hot-text: #f87171;
-    --status-warm-bg: rgba(249, 115, 22, 0.2);
-    --status-warm-text: #fb923c;
-    --status-cold-bg: rgba(59, 130, 246, 0.2);
-    --status-cold-text: #60a5fa;
-
-    /* Icon backgrounds - Dark Mode */
-    --icon-blue-bg: rgba(10, 132, 255, 0.2);
-    --icon-green-bg: rgba(48, 209, 88, 0.2);
-    --icon-purple-bg: rgba(191, 90, 242, 0.2);
-    --icon-orange-bg: rgba(255, 159, 10, 0.2);
-    --icon-red-bg: rgba(255, 69, 58, 0.2);
-    --icon-yellow-bg: rgba(255, 214, 10, 0.2);
-
-    /* Icon colors - Dark Mode */
-    --icon-blue: #0a84ff;
-    --icon-green: #30d158;
-    --icon-purple: #bf5af2;
-    --icon-orange: #ff9f0a;
-    --icon-red: #ff453a;
-    --icon-yellow: #ffd60a;
-
-    /* Score colors - Dark Mode */
-    --score-high-bg: rgba(34, 197, 94, 0.2);
-    --score-high-text: #4ade80;
-    --score-medium-bg: rgba(234, 179, 8, 0.2);
-    --score-medium-text: #facc15;
-    --score-low-bg: rgba(239, 68, 68, 0.2);
-    --score-low-text: #f87171;
-
-    /* Tooltip/Dropdown background - Dark Mode */
-    --dropdown-bg: #1c1c1e;
-
-    /* System orange/yellow for dark mode */
-    --system-orange: #ff9f0a;
-    --system-yellow: #ffd60a;
   }
 }
 
