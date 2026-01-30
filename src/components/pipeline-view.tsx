@@ -201,8 +201,8 @@ export function PipelineView() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold text-white">Pipeline</h2>
-          <p className="text-sm text-white/50">
+          <h2 className="text-2xl font-semibold text-theme">Pipeline</h2>
+          <p className="text-sm text-theme-secondary">
             {opportunities.length} opportunities • {formatCurrency(totalPipelineValue)} total value
           </p>
         </div>
@@ -216,34 +216,34 @@ export function PipelineView() {
       <div className="grid grid-cols-3 gap-4">
         <div className="glass-card p-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/20">
-              <DollarSign className="h-5 w-5 text-blue-400" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl icon-bg-blue">
+              <DollarSign className="h-5 w-5 icon-color-blue" />
             </div>
             <div>
-              <p className="text-sm text-white/50">Total Pipeline</p>
-              <p className="text-xl font-semibold text-white">{formatCurrency(totalPipelineValue)}</p>
+              <p className="text-sm text-theme-secondary">Total Pipeline</p>
+              <p className="text-xl font-semibold text-theme">{formatCurrency(totalPipelineValue)}</p>
             </div>
           </div>
         </div>
         <div className="glass-card p-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-500/20">
-              <TrendingUp className="h-5 w-5 text-green-400" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl icon-bg-green">
+              <TrendingUp className="h-5 w-5 icon-color-green" />
             </div>
             <div>
-              <p className="text-sm text-white/50">Weighted Pipeline</p>
-              <p className="text-xl font-semibold text-white">{formatCurrency(weightedPipelineValue)}</p>
+              <p className="text-sm text-theme-secondary">Weighted Pipeline</p>
+              <p className="text-xl font-semibold text-theme">{formatCurrency(weightedPipelineValue)}</p>
             </div>
           </div>
         </div>
         <div className="glass-card p-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-500/20">
-              <Zap className="h-5 w-5 text-purple-400" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl icon-bg-purple">
+              <Zap className="h-5 w-5 icon-color-purple" />
             </div>
             <div>
-              <p className="text-sm text-white/50">Avg AI Score</p>
-              <p className="text-xl font-semibold text-white">
+              <p className="text-sm text-theme-secondary">Avg AI Score</p>
+              <p className="text-xl font-semibold text-theme">
                 {Math.round(opportunities.reduce((sum, o) => sum + o.aiScore, 0) / opportunities.length)}
               </p>
             </div>
@@ -259,25 +259,25 @@ export function PipelineView() {
             className={cn(
               'flex-shrink-0 w-72 rounded-xl border transition-colors',
               dragOverStage === stage.id
-                ? 'bg-white/10 border-purple-500/50'
-                : 'bg-white/[0.02] border-white/10'
+                ? 'bg-theme-tertiary border-purple-500/50'
+                : 'bg-white/[0.02] border-theme'
             )}
             onDragOver={(e) => handleDragOver(e, stage.id)}
             onDragLeave={handleDragLeave}
             onDrop={() => handleDrop(stage.id)}
           >
             {/* Stage Header */}
-            <div className="p-4 border-b border-white/10">
+            <div className="p-4 border-b border-theme">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <div className={cn('h-3 w-3 rounded-full', stage.color)} />
-                  <h3 className="text-sm font-medium text-white">{stage.name}</h3>
+                  <h3 className="text-sm font-medium text-theme">{stage.name}</h3>
                 </div>
-                <span className="text-xs text-white/50 bg-white/10 px-2 py-0.5 rounded-full">
+                <span className="text-xs text-theme-secondary bg-theme-tertiary px-2 py-0.5 rounded-full">
                   {stageTotals[stage.id]?.count || 0}
                 </span>
               </div>
-              <p className="text-sm text-white/50">
+              <p className="text-sm text-theme-secondary">
                 {formatCurrency(stageTotals[stage.id]?.value || 0)}
               </p>
             </div>
@@ -326,36 +326,36 @@ function OpportunityCard({
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
       className={cn(
-        'p-3 rounded-xl bg-white/5 border border-white/10 cursor-grab active:cursor-grabbing transition-all hover:bg-white/[0.07]',
+        'p-3 rounded-xl bg-theme-tertiary border border-theme cursor-grab active:cursor-grabbing transition-all hover:bg-white/[0.07]',
         isDragging && 'opacity-50 scale-95'
       )}
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1 min-w-0">
-          <h4 className="font-medium text-white text-sm truncate">
+          <h4 className="font-medium text-theme text-sm truncate">
             {opportunity.company.name}
           </h4>
-          <p className="text-xs text-white/50 truncate">
+          <p className="text-xs text-theme-secondary truncate">
             {opportunity.contact.name} • {opportunity.contact.title}
           </p>
         </div>
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="p-1 rounded hover:bg-white/10 transition-colors"
+            className="p-1 rounded hover:bg-theme-tertiary transition-colors"
           >
-            <MoreHorizontal className="h-4 w-4 text-white/40" />
+            <MoreHorizontal className="h-4 w-4 text-theme-tertiary" />
           </button>
           {showMenu && (
-            <div className="absolute right-0 top-full mt-1 z-10 w-32 rounded-lg bg-[#1c1c1e] border border-white/10 shadow-xl py-1">
-              <button className="w-full px-3 py-1.5 text-left text-sm text-white/70 hover:bg-white/10">
+            <div className="absolute right-0 top-full mt-1 z-10 w-32 rounded-lg dropdown-bg border border-theme shadow-xl py-1">
+              <button className="w-full px-3 py-1.5 text-left text-sm text-theme-secondary hover:bg-theme-tertiary">
                 Edit
               </button>
-              <button className="w-full px-3 py-1.5 text-left text-sm text-white/70 hover:bg-white/10">
+              <button className="w-full px-3 py-1.5 text-left text-sm text-theme-secondary hover:bg-theme-tertiary">
                 View Details
               </button>
-              <button className="w-full px-3 py-1.5 text-left text-sm text-red-400 hover:bg-white/10">
+              <button className="w-full px-3 py-1.5 text-left text-sm text-red-400 hover:bg-theme-tertiary">
                 Delete
               </button>
             </div>
@@ -365,16 +365,16 @@ function OpportunityCard({
 
       {/* Value & Score */}
       <div className="flex items-center justify-between mb-3">
-        <span className="text-lg font-semibold text-white">
+        <span className="text-lg font-semibold text-theme">
           {formatCurrency(opportunity.value)}
         </span>
         <div className={cn(
           'flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-medium',
           opportunity.aiScore >= 80
-            ? 'bg-green-500/20 text-green-400'
+            ? 'score-high'
             : opportunity.aiScore >= 60
-            ? 'bg-yellow-500/20 text-yellow-400'
-            : 'bg-red-500/20 text-red-400'
+            ? 'score-medium'
+            : 'score-low'
         )}>
           <Zap className="h-3 w-3" />
           {opportunity.aiScore}
@@ -384,18 +384,18 @@ function OpportunityCard({
       {/* Probability Bar */}
       <div className="mb-3">
         <div className="flex items-center justify-between text-xs mb-1">
-          <span className="text-white/50">Probability</span>
-          <span className="text-white/70">{opportunity.probability}%</span>
+          <span className="text-theme-secondary">Probability</span>
+          <span className="text-theme-secondary">{opportunity.probability}%</span>
         </div>
-        <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+        <div className="h-1.5 rounded-full bg-theme-tertiary overflow-hidden">
           <div
             className={cn(
               'h-full rounded-full transition-all',
               opportunity.probability >= 70
-                ? 'bg-green-400'
+                ? 'probability-high'
                 : opportunity.probability >= 40
-                ? 'bg-yellow-400'
-                : 'bg-red-400'
+                ? 'probability-medium'
+                : 'probability-low'
             )}
             style={{ width: `${opportunity.probability}%` }}
           />
@@ -403,18 +403,18 @@ function OpportunityCard({
       </div>
 
       {/* Next Step */}
-      <div className="flex items-center gap-2 p-2 rounded-lg bg-white/5 text-xs">
+      <div className="flex items-center gap-2 p-2 rounded-lg bg-theme-tertiary text-xs">
         <ArrowRight className="h-3 w-3 text-purple-400 shrink-0" />
-        <span className="text-white/60 truncate">{opportunity.nextStep}</span>
+        <span className="text-theme-secondary truncate">{opportunity.nextStep}</span>
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10">
-        <div className="flex items-center gap-1 text-xs text-white/40">
+      <div className="flex items-center justify-between mt-3 pt-3 border-t border-theme">
+        <div className="flex items-center gap-1 text-xs text-theme-tertiary">
           <Clock className="h-3 w-3" />
           {opportunity.lastActivity}
         </div>
-        <GripVertical className="h-4 w-4 text-white/20" />
+        <GripVertical className="h-4 w-4 text-theme/20" />
       </div>
     </div>
   );

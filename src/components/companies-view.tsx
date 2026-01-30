@@ -93,8 +93,8 @@ export function CompaniesView() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold text-white">Companies</h2>
-          <p className="text-sm text-white/50">
+          <h2 className="text-2xl font-semibold text-theme">Companies</h2>
+          <p className="text-sm text-theme-secondary">
             {companies.length} companies in your pipeline
           </p>
         </div>
@@ -107,7 +107,7 @@ export function CompaniesView() {
       {/* Search & Filters */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-theme-tertiary" />
           <input
             type="text"
             placeholder="Search companies..."
@@ -116,7 +116,7 @@ export function CompaniesView() {
             className="search-input w-full"
           />
         </div>
-        <select className="h-10 rounded-xl bg-white/5 border border-white/10 px-4 text-sm text-white/80">
+        <select className="h-10 rounded-xl bg-theme-tertiary border border-theme px-4 text-sm text-theme">
           <option value="">All Industries</option>
           <option value="technology">Technology</option>
           <option value="media">Media & Entertainment</option>
@@ -170,18 +170,18 @@ function CompanyCard({
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/20 text-blue-400">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl icon-bg-blue icon-color-blue">
             <Building2 className="h-6 w-6" />
           </div>
           <div>
-            <h3 className="font-semibold text-white group-hover:text-blue-400 transition-colors">
+            <h3 className="font-semibold text-theme group-hover:text-blue-400 transition-colors">
               {company.name}
             </h3>
             <a
               href={`https://${company.domain}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-white/50 hover:text-white/70 flex items-center gap-1"
+              className="text-xs text-theme-secondary hover:text-theme-secondary flex items-center gap-1"
             >
               {company.domain}
               <ExternalLink className="h-3 w-3" />
@@ -195,7 +195,7 @@ function CompanyCard({
 
       {/* Description */}
       {company.description && (
-        <p className="text-sm text-white/60 mb-4 line-clamp-2">
+        <p className="text-sm text-theme-secondary mb-4 line-clamp-2">
           {company.description}
         </p>
       )}
@@ -205,7 +205,7 @@ function CompanyCard({
         <span className="badge-primary">
           {company.industry}
         </span>
-        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-white/10 text-white/70">
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-theme-tertiary text-theme-secondary">
           <Users className="mr-1 h-3 w-3" />
           {company.size}
         </span>
@@ -217,13 +217,13 @@ function CompanyCard({
           {company.techStack.slice(0, 3).map((tech) => (
             <span
               key={tech}
-              className="text-xs px-2 py-0.5 rounded bg-white/5 text-white/50"
+              className="text-xs px-2 py-0.5 rounded bg-theme-tertiary text-theme-secondary"
             >
               {tech}
             </span>
           ))}
           {company.techStack.length > 3 && (
-            <span className="text-xs px-2 py-0.5 text-white/30">
+            <span className="text-xs px-2 py-0.5 text-theme-tertiary">
               +{company.techStack.length - 3} more
             </span>
           )}
@@ -231,9 +231,9 @@ function CompanyCard({
       )}
 
       {/* Actions */}
-      <div className="flex items-center justify-between pt-4 border-t border-white/10">
+      <div className="flex items-center justify-between pt-4 border-t border-theme">
         {company.lastEnriched ? (
-          <span className="text-xs text-white/40 flex items-center gap-1">
+          <span className="text-xs text-theme-tertiary flex items-center gap-1">
             <Clock className="h-3 w-3" />
             Enriched {new Date(company.lastEnriched).toLocaleDateString()}
           </span>
@@ -258,9 +258,9 @@ function CompanyCard({
 // AI Score Badge
 function AIScoreBadge({ score }: { score: number }) {
   const getScoreColor = (s: number) => {
-    if (s >= 80) return 'bg-green-500/20 text-green-400 border-green-500/30';
-    if (s >= 60) return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-    return 'bg-red-500/20 text-red-400 border-red-500/30';
+    if (s >= 80) return 'score-high border-green-500/30';
+    if (s >= 60) return 'score-medium border-yellow-500/30';
+    return 'score-low border-red-500/30';
   };
 
   return (
@@ -315,22 +315,22 @@ function EnrichModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
       <div className="w-full max-w-2xl mx-4 glass-card">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-white/10">
+        <div className="flex items-center justify-between p-6 border-b border-theme">
           <div>
-            <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+            <h2 className="text-xl font-semibold text-theme flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-purple-400" />
               AI Enrich
             </h2>
-            <p className="text-sm text-white/50 mt-1">{company.name}</p>
+            <p className="text-sm text-theme-secondary mt-1">{company.name}</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+            className="p-2 rounded-lg hover:bg-theme-tertiary transition-colors"
           >
-            <X className="h-5 w-5 text-white/60" />
+            <X className="h-5 w-5 text-theme-secondary" />
           </button>
         </div>
 
@@ -339,12 +339,12 @@ function EnrichModal({
           {step === 'idle' && (
             <div className="text-center py-8">
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl gradient-bg mx-auto mb-4">
-                <Building2 className="h-8 w-8 text-white" />
+                <Building2 className="h-8 w-8 text-theme" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">
+              <h3 className="text-lg font-semibold text-theme mb-2">
                 Enrich {company.name}
               </h3>
-              <p className="text-white/50 text-sm mb-6 max-w-md mx-auto">
+              <p className="text-theme-secondary text-sm mb-6 max-w-md mx-auto">
                 AI will research this company to find detailed information,
                 identify voice AI opportunities, and calculate a fit score.
               </p>
@@ -359,10 +359,10 @@ function EnrichModal({
             <div className="py-8">
               <div className="flex flex-col items-center">
                 <Loader2 className="h-12 w-12 text-purple-400 animate-spin mb-4" />
-                <h3 className="text-lg font-semibold text-white mb-2">
+                <h3 className="text-lg font-semibold text-theme mb-2">
                   {step === 'researching' ? 'Researching Company...' : 'Calculating Score...'}
                 </h3>
-                <p className="text-white/50 text-sm">
+                <p className="text-theme-secondary text-sm">
                   {step === 'researching'
                     ? 'Analyzing products, tech stack, and voice AI opportunities'
                     : 'Evaluating company fit and scoring the opportunity'}
@@ -379,8 +379,8 @@ function EnrichModal({
                   )}
                   <span className="text-sm">Research</span>
                 </div>
-                <ChevronRight className="h-4 w-4 text-white/30" />
-                <div className={cn('flex items-center gap-2', step === 'scoring' ? 'text-purple-400' : 'text-white/30')}>
+                <ChevronRight className="h-4 w-4 text-theme-tertiary" />
+                <div className={cn('flex items-center gap-2', step === 'scoring' ? 'text-purple-400' : 'text-theme-tertiary')}>
                   {step === 'scoring' ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
@@ -401,18 +401,18 @@ function EnrichModal({
 
               {/* Company Overview */}
               <div className="glass-card p-4">
-                <h4 className="text-sm font-medium text-white/80 mb-3 flex items-center gap-2">
+                <h4 className="text-sm font-medium text-theme mb-3 flex items-center gap-2">
                   <Building2 className="h-4 w-4" />
                   Company Overview
                 </h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="text-white/50">Industry</span>
-                    <p className="text-white">{(data.company as Record<string, unknown>).industry as string || company.industry}</p>
+                    <span className="text-theme-secondary">Industry</span>
+                    <p className="text-theme">{(data.company as Record<string, unknown>).industry as string || company.industry}</p>
                   </div>
                   <div>
-                    <span className="text-white/50">Size</span>
-                    <p className="text-white">{(data.company as Record<string, unknown>).size as string || company.size}</p>
+                    <span className="text-theme-secondary">Size</span>
+                    <p className="text-theme">{(data.company as Record<string, unknown>).size as string || company.size}</p>
                   </div>
                 </div>
               </div>
@@ -420,7 +420,7 @@ function EnrichModal({
               {/* Voice AI Opportunities */}
               {data.voiceAIOpportunities && data.voiceAIOpportunities.length > 0 && (
                 <div className="glass-card p-4">
-                  <h4 className="text-sm font-medium text-white/80 mb-3 flex items-center gap-2">
+                  <h4 className="text-sm font-medium text-theme mb-3 flex items-center gap-2">
                     <Zap className="h-4 w-4 text-purple-400" />
                     Voice AI Opportunities
                     <span className="badge-primary ml-auto">{data.voiceAIOpportunities.length} found</span>
@@ -435,7 +435,7 @@ function EnrichModal({
                             opportunity.potentialImpact === 'High' ? 'text-green-400' : 'text-yellow-400'
                           )} />
                           <div>
-                            <span className="text-white">{opportunity.area}</span>
+                            <span className="text-theme">{opportunity.area}</span>
                             <span className={cn(
                               'ml-2 text-xs',
                               opportunity.potentialImpact === 'High' ? 'text-green-400' : 'text-yellow-400'
@@ -453,7 +453,7 @@ function EnrichModal({
               {/* Timing Signals */}
               {data.signals && data.signals.length > 0 && (
                 <div className="glass-card p-4">
-                  <h4 className="text-sm font-medium text-white/80 mb-3 flex items-center gap-2">
+                  <h4 className="text-sm font-medium text-theme mb-3 flex items-center gap-2">
                     <Clock className="h-4 w-4 text-blue-400" />
                     Timing Signals
                     <span className="badge-primary ml-auto">{data.signals.length} detected</span>
@@ -464,7 +464,7 @@ function EnrichModal({
                       return (
                         <div key={i} className="flex items-start gap-2 text-sm">
                           <div className="h-1.5 w-1.5 rounded-full bg-blue-400 mt-2" />
-                          <span className="text-white/80">{sig.description || sig.type}</span>
+                          <span className="text-theme">{sig.description || sig.type}</span>
                         </div>
                       );
                     })}
@@ -483,8 +483,8 @@ function EnrichModal({
           {error && (
             <div className="text-center py-8">
               <AlertCircle className="h-12 w-12 text-red-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-white mb-2">Research Failed</h3>
-              <p className="text-white/50 text-sm mb-4">{error}</p>
+              <h3 className="text-lg font-semibold text-theme mb-2">Research Failed</h3>
+              <p className="text-theme-secondary text-sm mb-4">{error}</p>
               <button onClick={handleEnrich} className="btn-primary">
                 Try Again
               </button>

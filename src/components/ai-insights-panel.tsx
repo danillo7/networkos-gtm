@@ -203,9 +203,9 @@ export function AIInsightsPanel({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl gradient-bg">
-              <Zap className="h-4 w-4 text-white" />
+              <Zap className="h-4 w-4 text-theme" />
             </div>
-            <span className="font-medium text-white text-sm">AI Insights</span>
+            <span className="font-medium text-theme text-sm">AI Insights</span>
             <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-400">
               {insights.filter(i => i.priority === 'high').length} urgent
             </span>
@@ -213,7 +213,7 @@ export function AIInsightsPanel({
           <button
             onClick={handleRefresh}
             disabled={isRefreshing || loading}
-            className="p-1.5 rounded-lg hover:bg-white/10 transition-colors text-white/40 hover:text-white"
+            className="p-1.5 rounded-lg hover:bg-theme-tertiary transition-colors text-theme-tertiary hover:text-theme"
           >
             <RefreshCw className={cn('h-4 w-4', (isRefreshing || loading) && 'animate-spin')} />
           </button>
@@ -223,11 +223,11 @@ export function AIInsightsPanel({
           {insights.slice(0, 3).map((insight) => (
             <div
               key={insight.id}
-              className="flex items-center gap-3 p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
+              className="flex items-center gap-3 p-2 rounded-lg bg-theme-tertiary hover:bg-theme-tertiary transition-colors cursor-pointer"
             >
               <div className={cn('h-2 w-2 rounded-full', getPriorityColor(insight.priority))} />
-              <span className="text-xs text-white/80 truncate flex-1">{insight.title}</span>
-              <ChevronRight className="h-3 w-3 text-white/40" />
+              <span className="text-xs text-theme/80 truncate flex-1">{insight.title}</span>
+              <ChevronRight className="h-3 w-3 text-theme-tertiary" />
             </div>
           ))}
         </div>
@@ -247,11 +247,11 @@ export function AIInsightsPanel({
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl gradient-bg">
-            <Zap className="h-6 w-6 text-white" />
+            <Zap className="h-6 w-6 text-theme" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-white">AI Insights</h3>
-            <p className="text-xs text-white/50">
+            <h3 className="text-lg font-semibold text-theme">AI Insights</h3>
+            <p className="text-xs text-theme-secondary">
               Last updated {lastUpdated.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
             </p>
           </div>
@@ -260,7 +260,7 @@ export function AIInsightsPanel({
           <button
             onClick={handleRefresh}
             disabled={isRefreshing || loading}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-theme-tertiary hover:bg-theme-tertiary transition-colors text-theme-secondary hover:text-theme"
           >
             <RefreshCw className={cn('h-4 w-4', (isRefreshing || loading) && 'animate-spin')} />
             Refresh
@@ -273,7 +273,7 @@ export function AIInsightsPanel({
         <div className="flex items-center justify-center py-8">
           <div className="text-center">
             <Loader2 className="h-8 w-8 text-purple-400 animate-spin mx-auto mb-3" />
-            <p className="text-sm text-white/60">Analyzing your pipeline...</p>
+            <p className="text-sm text-theme-secondary">Analyzing your pipeline...</p>
           </div>
         </div>
       )}
@@ -293,10 +293,10 @@ export function AIInsightsPanel({
 
       {/* Generate Action Plan CTA */}
       {!isRefreshing && !loading && (
-        <div className="mt-6 pt-6 border-t border-white/10">
+        <div className="mt-6 pt-6 border-t border-theme">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-white/70">
+              <p className="text-sm text-theme-secondary">
                 Based on these insights, generate a comprehensive action plan
               </p>
             </div>
@@ -380,14 +380,14 @@ function InsightCard({
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h4 className="font-medium text-white text-sm">{insight.title}</h4>
+            <h4 className="font-medium text-theme text-sm">{insight.title}</h4>
             {insight.priority === 'high' && (
               <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-400 uppercase">
                 Urgent
               </span>
             )}
           </div>
-          <p className="text-xs text-white/60 leading-relaxed">
+          <p className="text-xs text-theme-secondary leading-relaxed">
             {insight.description}
           </p>
 
@@ -399,8 +399,8 @@ function InsightCard({
                 <div className="flex flex-wrap gap-3">
                   {Object.entries(insight.metadata).map(([key, value]) => (
                     <div key={key} className="flex items-center gap-1.5 text-xs">
-                      <span className="text-white/40 capitalize">{key}:</span>
-                      <span className="text-white/80 font-medium">{value}</span>
+                      <span className="text-theme-tertiary capitalize">{key}:</span>
+                      <span className="text-theme/80 font-medium">{value}</span>
                     </div>
                   ))}
                 </div>
@@ -420,7 +420,7 @@ function InsightCard({
                         'text-xs px-3 py-1.5 rounded-lg transition-colors',
                         index === 0
                           ? 'bg-purple-500/20 text-purple-400 hover:bg-purple-500/30'
-                          : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
+                          : 'bg-theme-tertiary text-theme-secondary hover:bg-theme-tertiary hover:text-theme'
                       )}
                     >
                       {action.label}
@@ -435,7 +435,7 @@ function InsightCard({
         {/* Expand Indicator */}
         <ChevronRight
           className={cn(
-            'h-4 w-4 text-white/40 transition-transform shrink-0',
+            'h-4 w-4 text-theme-tertiary transition-transform shrink-0',
             expanded && 'rotate-90'
           )}
         />
@@ -453,22 +453,22 @@ export function QuickInsightsWidget({ onViewAll }: { onViewAll?: () => void }) {
     <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/20">
       <div className="flex items-center gap-3 mb-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl gradient-bg">
-          <Zap className="h-5 w-5 text-white" />
+          <Zap className="h-5 w-5 text-theme" />
         </div>
         <div>
-          <p className="text-white font-medium text-sm">AI Insights</p>
-          <p className="text-xs text-white/50">{urgentCount} urgent, {totalCount} total</p>
+          <p className="text-theme font-medium text-sm">AI Insights</p>
+          <p className="text-xs text-theme-secondary">{urgentCount} urgent, {totalCount} total</p>
         </div>
       </div>
 
       <div className="space-y-2 mb-3">
         <div className="flex items-center gap-2 text-xs">
           <div className="h-1.5 w-1.5 rounded-full bg-red-400" />
-          <span className="text-white/70 truncate">3 high-score leads need attention</span>
+          <span className="text-theme-secondary truncate">3 high-score leads need attention</span>
         </div>
         <div className="flex items-center gap-2 text-xs">
           <div className="h-1.5 w-1.5 rounded-full bg-orange-400" />
-          <span className="text-white/70 truncate">Best time to reach TechCorp</span>
+          <span className="text-theme-secondary truncate">Best time to reach TechCorp</span>
         </div>
       </div>
 

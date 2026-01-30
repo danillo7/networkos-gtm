@@ -139,8 +139,8 @@ export function ContactFinderView() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-semibold text-white">Find Decision Makers</h2>
-        <p className="text-sm text-white/50">
+        <h2 className="text-2xl font-semibold text-theme">Find Decision Makers</h2>
+        <p className="text-sm text-theme-secondary">
           Discover key contacts at target companies
         </p>
       </div>
@@ -150,7 +150,7 @@ export function ContactFinderView() {
         <div className="space-y-6">
           {/* Company Selection */}
           <div className="glass-card p-6">
-            <h3 className="text-sm font-medium text-white/80 mb-4 flex items-center gap-2">
+            <h3 className="text-sm font-medium text-theme/80 mb-4 flex items-center gap-2">
               <Building2 className="h-4 w-4" />
               Target Company
             </h3>
@@ -158,25 +158,25 @@ export function ContactFinderView() {
             <div className="relative">
               <button
                 onClick={() => setShowCompanyDropdown(!showCompanyDropdown)}
-                className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+                className="w-full flex items-center justify-between p-3 rounded-xl bg-theme-tertiary border border-theme hover:bg-theme-tertiary transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/20">
                     <Building2 className="h-5 w-5 text-blue-400" />
                   </div>
                   <div className="text-left">
-                    <p className="text-sm font-medium text-white">{selectedCompany.name}</p>
-                    <p className="text-xs text-white/50">{selectedCompany.domain}</p>
+                    <p className="text-sm font-medium text-theme">{selectedCompany.name}</p>
+                    <p className="text-xs text-theme-secondary">{selectedCompany.domain}</p>
                   </div>
                 </div>
                 <ChevronDown className={cn(
-                  'h-5 w-5 text-white/40 transition-transform',
+                  'h-5 w-5 text-theme-tertiary transition-transform',
                   showCompanyDropdown && 'rotate-180'
                 )} />
               </button>
 
               {showCompanyDropdown && (
-                <div className="absolute top-full left-0 right-0 mt-2 z-10 rounded-xl bg-[#1c1c1e] border border-white/10 shadow-xl overflow-hidden">
+                <div className="absolute top-full left-0 right-0 mt-2 z-10 rounded-xl bg-[#1c1c1e] border border-theme shadow-xl overflow-hidden">
                   {SAMPLE_COMPANIES.map((company) => (
                     <button
                       key={company.id}
@@ -185,16 +185,16 @@ export function ContactFinderView() {
                         setShowCompanyDropdown(false);
                       }}
                       className={cn(
-                        'w-full flex items-center gap-3 p-3 hover:bg-white/10 transition-colors text-left',
-                        selectedCompany.id === company.id && 'bg-white/5'
+                        'w-full flex items-center gap-3 p-3 hover:bg-theme-tertiary transition-colors text-left',
+                        selectedCompany.id === company.id && 'bg-theme-tertiary'
                       )}
                     >
                       <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20">
                         <Building2 className="h-4 w-4 text-blue-400" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-white">{company.name}</p>
-                        <p className="text-xs text-white/50">{company.domain}</p>
+                        <p className="text-sm font-medium text-theme">{company.name}</p>
+                        <p className="text-xs text-theme-secondary">{company.domain}</p>
                       </div>
                       {selectedCompany.id === company.id && (
                         <Check className="h-4 w-4 text-green-400 ml-auto" />
@@ -208,7 +208,7 @@ export function ContactFinderView() {
 
           {/* Target Roles */}
           <div className="glass-card p-6">
-            <h3 className="text-sm font-medium text-white/80 mb-4 flex items-center gap-2">
+            <h3 className="text-sm font-medium text-theme/80 mb-4 flex items-center gap-2">
               <Shield className="h-4 w-4" />
               Target Roles
             </h3>
@@ -222,7 +222,7 @@ export function ContactFinderView() {
                     'w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left',
                     selectedRoles.includes(role.id)
                       ? 'bg-purple-500/20 border-purple-500/50'
-                      : 'bg-white/5 border-white/10 hover:bg-white/10'
+                      : 'bg-theme-tertiary border-theme hover:bg-theme-tertiary'
                   )}
                 >
                   <div className={cn(
@@ -232,17 +232,17 @@ export function ContactFinderView() {
                       : 'border-white/30'
                   )}>
                     {selectedRoles.includes(role.id) && (
-                      <Check className="h-4 w-4 text-white" />
+                      <Check className="h-4 w-4 text-theme" />
                     )}
                   </div>
                   <div className="flex-1">
                     <p className={cn(
                       'text-sm font-medium',
-                      selectedRoles.includes(role.id) ? 'text-white' : 'text-white/70'
+                      selectedRoles.includes(role.id) ? 'text-theme' : 'text-theme-secondary'
                     )}>
                       {role.label}
                     </p>
-                    <p className="text-xs text-white/40">{role.description}</p>
+                    <p className="text-xs text-theme-tertiary">{role.description}</p>
                   </div>
                 </button>
               ))}
@@ -251,7 +251,7 @@ export function ContactFinderView() {
 
           {/* Departments */}
           <div className="glass-card p-6">
-            <h3 className="text-sm font-medium text-white/80 mb-4 flex items-center gap-2">
+            <h3 className="text-sm font-medium text-theme/80 mb-4 flex items-center gap-2">
               <Users className="h-4 w-4" />
               Departments
             </h3>
@@ -265,7 +265,7 @@ export function ContactFinderView() {
                     'flex flex-col items-center gap-2 p-4 rounded-xl border transition-all',
                     selectedDepartments.includes(dept.id)
                       ? 'bg-blue-500/20 border-blue-500/50 text-blue-400'
-                      : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
+                      : 'bg-theme-tertiary border-theme text-theme-secondary hover:bg-theme-tertiary'
                   )}
                 >
                   <dept.icon className="h-5 w-5" />
@@ -277,11 +277,11 @@ export function ContactFinderView() {
 
           {/* Max Contacts */}
           <div className="glass-card p-6">
-            <h3 className="text-sm font-medium text-white/80 mb-4">Max Contacts</h3>
+            <h3 className="text-sm font-medium text-theme/80 mb-4">Max Contacts</h3>
             <select
               value={maxContacts}
               onChange={(e) => setMaxContacts(Number(e.target.value))}
-              className="w-full h-10 rounded-xl bg-white/5 border border-white/10 px-3 text-sm text-white"
+              className="w-full h-10 rounded-xl bg-theme-tertiary border border-theme px-3 text-sm text-theme"
             >
               <option value={5}>5 contacts</option>
               <option value={10}>10 contacts</option>
@@ -313,7 +313,7 @@ export function ContactFinderView() {
         {/* Right Column - Results */}
         <div className="lg:col-span-2 glass-card p-6 flex flex-col min-h-[600px]">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-white/80 flex items-center gap-2">
+            <h3 className="text-sm font-medium text-theme/80 flex items-center gap-2">
               <Users className="h-4 w-4" />
               Discovered Contacts
               {discoveredContacts.length > 0 && (
@@ -326,7 +326,7 @@ export function ContactFinderView() {
               <button
                 onClick={handleFind}
                 disabled={loading}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-theme-tertiary hover:bg-theme-tertiary transition-colors text-theme-secondary hover:text-theme"
               >
                 <RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} />
                 Refresh
@@ -340,8 +340,8 @@ export function ContactFinderView() {
               <div className="flex-1 flex items-center justify-center">
                 <div className="text-center">
                   <Loader2 className="h-12 w-12 text-purple-400 animate-spin mx-auto mb-4" />
-                  <p className="text-white/70">Searching for decision makers...</p>
-                  <p className="text-sm text-white/40 mt-1">
+                  <p className="text-theme-secondary">Searching for decision makers...</p>
+                  <p className="text-sm text-theme-tertiary mt-1">
                     Analyzing {selectedCompany.name} organization
                   </p>
                 </div>
@@ -352,8 +352,8 @@ export function ContactFinderView() {
               <div className="flex-1 flex items-center justify-center">
                 <div className="text-center">
                   <AlertCircle className="h-12 w-12 text-red-400 mx-auto mb-4" />
-                  <p className="text-white/70">Failed to find contacts</p>
-                  <p className="text-sm text-white/40 mt-1">{error}</p>
+                  <p className="text-theme-secondary">Failed to find contacts</p>
+                  <p className="text-sm text-theme-tertiary mt-1">{error}</p>
                   <button onClick={handleFind} className="btn-primary mt-4">
                     Try Again
                   </button>
@@ -365,10 +365,10 @@ export function ContactFinderView() {
               <div className="flex-1 flex items-center justify-center">
                 <div className="text-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-2xl gradient-bg mx-auto mb-4">
-                    <Search className="h-8 w-8 text-white" />
+                    <Search className="h-8 w-8 text-theme" />
                   </div>
-                  <p className="text-white/70">Configure filters and click Find Contacts</p>
-                  <p className="text-sm text-white/40 mt-1">
+                  <p className="text-theme-secondary">Configure filters and click Find Contacts</p>
+                  <p className="text-sm text-theme-tertiary mt-1">
                     AI will discover key decision makers at the target company
                   </p>
                 </div>
@@ -405,10 +405,10 @@ function ContactResultCard({
   onAdd: () => void;
 }) {
   return (
-    <div className="p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/[0.07] transition-colors">
+    <div className="p-4 rounded-xl bg-theme-tertiary border border-theme hover:bg-white/[0.07] transition-colors">
       <div className="flex items-start gap-4">
         {/* Avatar */}
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white font-medium shrink-0">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-theme font-medium shrink-0">
           {contact.firstName[0]}
           {contact.lastName[0]}
         </div>
@@ -416,20 +416,20 @@ function ContactResultCard({
         {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <h4 className="font-medium text-white truncate">{contact.fullName}</h4>
+            <h4 className="font-medium text-theme truncate">{contact.fullName}</h4>
             {contact.decisionMaker && (
               <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-500/20 text-purple-400">
                 Decision Maker
               </span>
             )}
           </div>
-          <p className="text-sm text-white/60 truncate">{contact.title}</p>
+          <p className="text-sm text-theme-secondary truncate">{contact.title}</p>
 
           {/* Email with confidence */}
           {contact.email && (
             <div className="flex items-center gap-2 mt-2">
-              <Mail className="h-3.5 w-3.5 text-white/40" />
-              <span className="text-sm text-white/70">{contact.email}</span>
+              <Mail className="h-3.5 w-3.5 text-theme-tertiary" />
+              <span className="text-sm text-theme-secondary">{contact.email}</span>
               {contact.emailConfidence && (
                 <span className={cn(
                   'text-xs px-1.5 py-0.5 rounded',
@@ -449,7 +449,7 @@ function ContactResultCard({
           <div className="flex items-center gap-4 mt-3">
             <div className="flex items-center gap-2">
               <Zap className="h-4 w-4 text-yellow-400" />
-              <span className="text-sm text-white/70">Authority Score:</span>
+              <span className="text-sm text-theme-secondary">Authority Score:</span>
               <span className={cn(
                 'text-sm font-medium',
                 contact.authorityScore >= 80
@@ -461,7 +461,7 @@ function ContactResultCard({
                 {contact.authorityScore}
               </span>
             </div>
-            <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
+            <div className="flex-1 h-1.5 rounded-full bg-theme-tertiary overflow-hidden">
               <div
                 className={cn(
                   'h-full rounded-full transition-all',
@@ -493,7 +493,7 @@ function ContactResultCard({
               Add to List
             </button>
           )}
-          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-white/5 text-white/70 hover:bg-white/10 hover:text-white transition-colors">
+          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-theme-tertiary text-theme-secondary hover:bg-theme-tertiary hover:text-theme transition-colors">
             <MessageSquare className="h-4 w-4" />
             Generate Pitch
           </button>

@@ -30,6 +30,10 @@ import {
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { useDashboardMetrics } from '@/hooks/useApi';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { ThemeSwitcher } from '@/components/theme-switcher';
+import { LanguageSwitcher } from '@/components/language-switcher';
+import { ZoomControls } from '@/components/zoom-controls';
 
 // Import view components
 import { CompaniesView } from '@/components/companies-view';
@@ -37,6 +41,56 @@ import { ContactsView } from '@/components/contacts-view';
 import { PitchesView } from '@/components/pitches-view';
 import { ContactFinderView } from '@/components/contact-finder-view';
 import { PipelineView } from '@/components/pipeline-view';
+
+// Saudacoes inteligentes por horario e locale
+const getGreeting = (hour: number, locale: string = 'pt-BR'): string => {
+  const greetings: Record<string, Record<string, string>> = {
+    'pt-BR': {
+      morning: 'Bom dia',
+      afternoon: 'Boa tarde',
+      evening: 'Boa noite',
+      night: 'Boa madrugada'
+    },
+    'en': {
+      morning: 'Good morning',
+      afternoon: 'Good afternoon',
+      evening: 'Good evening',
+      night: 'Good night'
+    },
+    'es': {
+      morning: 'Buenos días',
+      afternoon: 'Buenas tardes',
+      evening: 'Buenas noches',
+      night: 'Buenas madrugadas'
+    }
+  };
+
+  const lang = greetings[locale] || greetings['pt-BR'];
+
+  if (hour >= 0 && hour < 6) return lang.night;
+  if (hour >= 6 && hour < 12) return lang.morning;
+  if (hour >= 12 && hour < 18) return lang.afternoon;
+  return lang.evening;
+};
+
+// Data formatada por locale
+const getFormattedDate = (date: Date, locale: string = 'pt-BR'): string => {
+  return date.toLocaleDateString(locale, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
+
+// Hora com fuso horario
+const getFormattedTime = (date: Date, locale: string = 'pt-BR'): string => {
+  return date.toLocaleTimeString(locale, {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short'
+  });
+};
 
 // Navigation items
 const NAV_ITEMS = [
@@ -54,6 +108,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = React.useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
   const [currentTime, setCurrentTime] = React.useState(new Date());
+  const { locale, t } = useLanguage();
 
   React.useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
@@ -61,14 +116,19 @@ export default function Home() {
   }, []);
 
   const greeting = React.useMemo(() => {
-    const hour = currentTime.getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
-  }, [currentTime]);
+    return getGreeting(currentTime.getHours(), locale);
+  }, [currentTime, locale]);
+
+  const formattedDate = React.useMemo(() => {
+    return getFormattedDate(currentTime, locale);
+  }, [currentTime, locale]);
+
+  const formattedTime = React.useMemo(() => {
+    return getFormattedTime(currentTime, locale);
+  }, [currentTime, locale]);
 
   return (
-    <div className="flex h-screen bg-black">
+    <div className="flex h-screen" style={{ background: 'var(--bg)' }}>
       {/* Sidebar */}
       <aside
         className={cn(
@@ -77,15 +137,15 @@ export default function Home() {
         )}
       >
         {/* Logo */}
-        <div className="flex h-16 items-center justify-between px-5 border-b border-white/[0.08]">
+        <div className="flex h-16 items-center justify-between px-5 border-b" style={{ borderColor: 'var(--border-color)' }}>
           {sidebarOpen && (
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl gradient-bg">
                 <Sparkles className="h-5 w-5 text-white" />
               </div>
               <div>
-                <span className="font-semibold text-white">NetworkOS</span>
-                <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 text-white/60">
+                <span className="font-semibold" style={{ color: 'var(--text)' }}>NetworkOS</span>
+                <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: 'var(--fill-tertiary)', color: 'var(--text-secondary)' }}>
                   GTM
                 </span>
               </div>
@@ -93,20 +153,22 @@ export default function Home() {
           )}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+            className="p-2 rounded-lg transition-colors"
+            style={{ color: 'var(--text-secondary)' }}
           >
-            <Menu className="h-4 w-4 text-white/60" />
+            <Menu className="h-4 w-4" />
           </button>
         </div>
 
         {/* Greeting Card */}
         {sidebarOpen && (
-          <div className="mx-4 mt-4 p-4 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/[0.08]">
-            <p className="text-white/60 text-sm">{greeting}</p>
-            <p className="text-white font-medium mt-0.5">Welcome back!</p>
-            <p className="text-white/40 text-xs mt-2 flex items-center gap-1.5">
+          <div className="mx-4 mt-4 p-4 rounded-2xl" style={{ background: 'var(--fill-tertiary)', border: '1px solid var(--border-color)' }}>
+            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{greeting}</p>
+            <p className="font-medium mt-0.5" style={{ color: 'var(--text)' }}>{t('sidebar.hello')} Danillo!</p>
+            <p className="text-xs mt-2 capitalize" style={{ color: 'var(--text-secondary)' }}>{formattedDate}</p>
+            <p className="text-xs mt-1 flex items-center gap-1.5" style={{ color: 'var(--text-tertiary)' }}>
               <Clock className="h-3 w-3" />
-              {currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+              {formattedTime}
             </p>
           </div>
         )}
@@ -130,7 +192,7 @@ export default function Home() {
         </nav>
 
         {/* Settings */}
-        <div className="px-3 py-4 border-t border-white/[0.08]">
+        <div className="px-3 py-4 border-t" style={{ borderColor: 'var(--border-color)' }}>
           <button
             className={cn(
               'nav-item w-full',
@@ -144,26 +206,35 @@ export default function Home() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto bg-black">
+      <main className="flex-1 overflow-auto" style={{ background: 'var(--bg)' }}>
         {/* Header */}
         <header className="app-header">
           <div>
-            <h1 className="text-xl font-semibold text-white capitalize">
+            <h1 className="text-xl font-semibold capitalize" style={{ color: 'var(--text)' }}>
               {activeTab === 'contact-finder' ? 'Find Contacts' : activeTab}
             </h1>
-            <p className="text-sm text-white/50">AI-First GTM Platform</p>
+            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>AI-First GTM Platform</p>
           </div>
 
           <div className="flex items-center gap-4">
             {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+            <div className="relative hidden md:block">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" style={{ color: 'var(--text-tertiary)' }} />
               <input
                 type="text"
                 placeholder="Search companies, contacts..."
-                className="search-input w-72"
+                className="search-input w-full md:w-72"
               />
             </div>
+
+            {/* Zoom Controls */}
+            <ZoomControls />
+
+            {/* Theme Switcher */}
+            <ThemeSwitcher />
+
+            {/* Language Switcher */}
+            <LanguageSwitcher />
 
             {/* Quick Actions */}
             <button className="btn-primary">
@@ -205,11 +276,11 @@ function DashboardView({ onNavigate }: { onNavigate: (tab: string) => void }) {
   return (
     <div className="space-y-6">
       {/* Quick Stats */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           icon={<Building2 className="h-5 w-5" />}
-          iconBg="bg-blue-500/20"
-          iconColor="text-blue-400"
+          iconBg="icon-bg-blue"
+          iconColor="icon-color-blue"
           title="Total Companies"
           value={metrics?.totalCompanies?.toString() || '127'}
           change="+12%"
@@ -218,8 +289,8 @@ function DashboardView({ onNavigate }: { onNavigate: (tab: string) => void }) {
         />
         <StatCard
           icon={<Users className="h-5 w-5" />}
-          iconBg="bg-green-500/20"
-          iconColor="text-green-400"
+          iconBg="icon-bg-green"
+          iconColor="icon-color-green"
           title="Active Contacts"
           value={metrics?.totalContacts?.toString() || '438'}
           change="+8%"
@@ -228,8 +299,8 @@ function DashboardView({ onNavigate }: { onNavigate: (tab: string) => void }) {
         />
         <StatCard
           icon={<Target className="h-5 w-5" />}
-          iconBg="bg-purple-500/20"
-          iconColor="text-purple-400"
+          iconBg="icon-bg-purple"
+          iconColor="icon-color-purple"
           title="Pipeline Value"
           value={metrics?.pipelineValue ? `$${(metrics.pipelineValue / 1000000).toFixed(1)}M` : '$2.4M'}
           change="+23%"
@@ -238,8 +309,8 @@ function DashboardView({ onNavigate }: { onNavigate: (tab: string) => void }) {
         />
         <StatCard
           icon={<Zap className="h-5 w-5" />}
-          iconBg="bg-orange-500/20"
-          iconColor="text-orange-400"
+          iconBg="icon-bg-orange"
+          iconColor="icon-color-orange"
           title="Avg AI Score"
           value={metrics?.averageAIScore?.toString() || '72'}
           change="+5%"
@@ -254,7 +325,7 @@ function DashboardView({ onNavigate }: { onNavigate: (tab: string) => void }) {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <AlertCircle className="h-5 w-5 text-orange-400" />
-              <h3 className="text-lg font-semibold text-white">Urgent Actions</h3>
+              <h3 className="text-lg font-semibold" style={{ color: 'var(--text)' }}>Urgent Actions</h3>
             </div>
             <span className="text-xs px-2 py-1 rounded-full bg-orange-500/20 text-orange-400">
               {metrics.urgentActions.length} items
@@ -264,15 +335,16 @@ function DashboardView({ onNavigate }: { onNavigate: (tab: string) => void }) {
             {metrics.urgentActions.map((action, index) => (
               <div
                 key={index}
-                className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
+                className="flex items-center gap-3 p-3 rounded-xl transition-colors cursor-pointer"
+                style={{ background: 'var(--fill-tertiary)' }}
               >
                 <div className={cn(
                   'h-2 w-2 rounded-full',
                   action.priority === 'high' ? 'bg-red-400' :
                   action.priority === 'medium' ? 'bg-yellow-400' : 'bg-blue-400'
                 )} />
-                <span className="text-sm text-white/80 flex-1">{action.message}</span>
-                <ChevronRight className="h-4 w-4 text-white/40" />
+                <span className="text-sm flex-1" style={{ color: 'var(--text-secondary)' }}>{action.message}</span>
+                <ChevronRight className="h-4 w-4" style={{ color: 'var(--text-tertiary)' }} />
               </div>
             ))}
           </div>
@@ -280,27 +352,27 @@ function DashboardView({ onNavigate }: { onNavigate: (tab: string) => void }) {
       )}
 
       {/* Quick Actions */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
         <ActionCard
           icon={<Search className="h-6 w-6" />}
-          iconBg="bg-blue-500/20"
-          iconColor="text-blue-400"
+          iconBg="icon-bg-blue"
+          iconColor="icon-color-blue"
           title="Research Company"
           description="Deep AI-powered company analysis"
           onClick={() => onNavigate('companies')}
         />
         <ActionCard
           icon={<Sparkles className="h-6 w-6" />}
-          iconBg="bg-purple-500/20"
-          iconColor="text-purple-400"
+          iconBg="icon-bg-purple"
+          iconColor="icon-color-purple"
           title="Generate Pitch"
           description="AI-crafted personalized outreach"
           onClick={() => onNavigate('pitches')}
         />
         <ActionCard
           icon={<Users className="h-6 w-6" />}
-          iconBg="bg-green-500/20"
-          iconColor="text-green-400"
+          iconBg="icon-bg-green"
+          iconColor="icon-color-green"
           title="Find Contacts"
           description="Discover decision makers"
           onClick={() => onNavigate('contact-finder')}
@@ -311,14 +383,15 @@ function DashboardView({ onNavigate }: { onNavigate: (tab: string) => void }) {
       <div className="glass-card p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-lg font-semibold text-white">Recent Activity</h3>
-            <p className="text-sm text-white/50">Latest actions and updates</p>
+            <h3 className="text-lg font-semibold" style={{ color: 'var(--text)' }}>Recent Activity</h3>
+            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Latest actions and updates</p>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => { reset(); fetch(); }}
               disabled={loading}
-              className="p-2 rounded-lg hover:bg-white/10 transition-colors text-white/40 hover:text-white"
+              className="p-2 rounded-lg transition-colors"
+              style={{ color: 'var(--text-tertiary)' }}
             >
               <RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} />
             </button>
@@ -329,7 +402,7 @@ function DashboardView({ onNavigate }: { onNavigate: (tab: string) => void }) {
         </div>
         {loading ? (
           <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-6 w-6 text-purple-400 animate-spin" />
+            <Loader2 className="h-6 w-6 icon-color-purple animate-spin" />
           </div>
         ) : metrics?.recentActivity && metrics.recentActivity.length > 0 ? (
           <div className="space-y-1">
@@ -343,10 +416,10 @@ function DashboardView({ onNavigate }: { onNavigate: (tab: string) => void }) {
                   <Target className="h-4 w-4" />
                 }
                 iconBg={
-                  activity.type === 'company' ? 'bg-blue-500/20' :
-                  activity.type === 'pitch' ? 'bg-purple-500/20' :
-                  activity.type === 'contact' ? 'bg-green-500/20' :
-                  'bg-orange-500/20'
+                  activity.type === 'company' ? 'icon-bg-blue' :
+                  activity.type === 'pitch' ? 'icon-bg-purple' :
+                  activity.type === 'contact' ? 'icon-bg-green' :
+                  'icon-bg-orange'
                 }
                 title={activity.description}
                 time={activity.timestamp}
@@ -357,25 +430,25 @@ function DashboardView({ onNavigate }: { onNavigate: (tab: string) => void }) {
           <div className="space-y-1">
             <ActivityItem
               icon={<Building2 className="h-4 w-4" />}
-              iconBg="bg-blue-500/20"
+              iconBg="icon-bg-blue"
               title="New company added: Acme Corp"
               time="2 minutes ago"
             />
             <ActivityItem
               icon={<Sparkles className="h-4 w-4" />}
-              iconBg="bg-purple-500/20"
+              iconBg="icon-bg-purple"
               title="Pitch generated for TechStart Inc"
               time="15 minutes ago"
             />
             <ActivityItem
               icon={<Users className="h-4 w-4" />}
-              iconBg="bg-green-500/20"
+              iconBg="icon-bg-green"
               title="3 contacts found at DataFlow"
               time="1 hour ago"
             />
             <ActivityItem
               icon={<Target className="h-4 w-4" />}
-              iconBg="bg-orange-500/20"
+              iconBg="icon-bg-orange"
               title="Opportunity moved to 'Demo Done'"
               time="2 hours ago"
             />
@@ -390,8 +463,8 @@ function DashboardView({ onNavigate }: { onNavigate: (tab: string) => void }) {
             <Zap className="h-6 w-6 text-white" />
           </div>
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-white">AI Insights</h3>
-            <p className="text-sm text-white/50 mt-1">
+            <h3 className="text-lg font-semibold" style={{ color: 'var(--text)' }}>AI Insights</h3>
+            <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
               Based on your pipeline analysis, we recommend focusing on the 3 high-score leads
               that haven&apos;t been contacted in the last week. The best time to reach out is
               Tuesday morning between 9-11 AM.
@@ -403,7 +476,8 @@ function DashboardView({ onNavigate }: { onNavigate: (tab: string) => void }) {
               </button>
               <button
                 onClick={() => onNavigate('pipeline')}
-                className="text-sm text-white/60 hover:text-white transition-colors"
+                className="text-sm transition-colors"
+                style={{ color: 'var(--text-secondary)' }}
               >
                 View Pipeline →
               </button>
@@ -433,7 +507,7 @@ function AnalyticsView() {
       <div className="glass-card p-12 flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-12 w-12 text-purple-400 animate-spin mx-auto mb-4" />
-          <p className="text-white/70">Loading analytics...</p>
+          <p style={{ color: 'var(--text-secondary)' }}>Loading analytics...</p>
         </div>
       </div>
     );
@@ -444,7 +518,7 @@ function AnalyticsView() {
       <div className="glass-card p-12 flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="h-12 w-12 text-red-400 mx-auto mb-4" />
-          <p className="text-white/70">Failed to load analytics</p>
+          <p style={{ color: 'var(--text-secondary)' }}>Failed to load analytics</p>
           <button onClick={fetch} className="btn-primary mt-4">Try Again</button>
         </div>
       </div>
@@ -454,11 +528,11 @@ function AnalyticsView() {
   return (
     <div className="space-y-6">
       {/* Summary Stats */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           icon={<Building2 className="h-5 w-5" />}
-          iconBg="bg-blue-500/20"
-          iconColor="text-blue-400"
+          iconBg="icon-bg-blue"
+          iconColor="icon-color-blue"
           title="Total Companies"
           value={metrics?.totalCompanies?.toString() || '0'}
           change="+12%"
@@ -466,8 +540,8 @@ function AnalyticsView() {
         />
         <StatCard
           icon={<Users className="h-5 w-5" />}
-          iconBg="bg-green-500/20"
-          iconColor="text-green-400"
+          iconBg="icon-bg-green"
+          iconColor="icon-color-green"
           title="Total Contacts"
           value={metrics?.totalContacts?.toString() || '0'}
           change="+8%"
@@ -475,8 +549,8 @@ function AnalyticsView() {
         />
         <StatCard
           icon={<Mail className="h-5 w-5" />}
-          iconBg="bg-purple-500/20"
-          iconColor="text-purple-400"
+          iconBg="icon-bg-purple"
+          iconColor="icon-color-purple"
           title="Active Sequences"
           value={metrics?.activeSequences?.toString() || '0'}
           change="+15%"
@@ -484,8 +558,8 @@ function AnalyticsView() {
         />
         <StatCard
           icon={<Zap className="h-5 w-5" />}
-          iconBg="bg-orange-500/20"
-          iconColor="text-orange-400"
+          iconBg="icon-bg-orange"
+          iconColor="icon-color-orange"
           title="Avg AI Score"
           value={metrics?.averageAIScore?.toString() || '0'}
           change="+5%"
@@ -496,20 +570,20 @@ function AnalyticsView() {
       {/* Charts Placeholder */}
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="glass-card p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Pipeline by Stage</h3>
-          <div className="h-64 flex items-center justify-center border border-dashed border-white/20 rounded-xl">
+          <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text)' }}>Pipeline by Stage</h3>
+          <div className="h-64 flex items-center justify-center border border-dashed rounded-xl" style={{ borderColor: 'var(--border-color)' }}>
             <div className="text-center">
-              <BarChart3 className="h-8 w-8 text-white/30 mx-auto mb-2" />
-              <p className="text-white/40 text-sm">Chart visualization coming soon</p>
+              <BarChart3 className="h-8 w-8 mx-auto mb-2" style={{ color: 'var(--text-tertiary)' }} />
+              <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Chart visualization coming soon</p>
             </div>
           </div>
         </div>
         <div className="glass-card p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Activity Over Time</h3>
-          <div className="h-64 flex items-center justify-center border border-dashed border-white/20 rounded-xl">
+          <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text)' }}>Activity Over Time</h3>
+          <div className="h-64 flex items-center justify-center border border-dashed rounded-xl" style={{ borderColor: 'var(--border-color)' }}>
             <div className="text-center">
-              <TrendingUp className="h-8 w-8 text-white/30 mx-auto mb-2" />
-              <p className="text-white/40 text-sm">Chart visualization coming soon</p>
+              <TrendingUp className="h-8 w-8 mx-auto mb-2" style={{ color: 'var(--text-tertiary)' }} />
+              <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Chart visualization coming soon</p>
             </div>
           </div>
         </div>
@@ -517,15 +591,15 @@ function AnalyticsView() {
 
       {/* Export Options */}
       <div className="glass-card p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Export Data</h3>
+        <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text)' }}>Export Data</h3>
         <div className="flex items-center gap-4">
-          <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white">
+          <button className="flex items-center gap-2 px-4 py-2 rounded-xl transition-colors" style={{ background: 'var(--fill-tertiary)', color: 'var(--text-secondary)' }}>
             Download CSV (Day)
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white">
+          <button className="flex items-center gap-2 px-4 py-2 rounded-xl transition-colors" style={{ background: 'var(--fill-tertiary)', color: 'var(--text-secondary)' }}>
             Download CSV (Week)
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white">
+          <button className="flex items-center gap-2 px-4 py-2 rounded-xl transition-colors" style={{ background: 'var(--fill-tertiary)', color: 'var(--text-secondary)' }}>
             Download CSV (Month)
           </button>
         </div>
@@ -557,16 +631,16 @@ function StatCard({
   return (
     <div className="stat-card">
       <div className={cn('stat-icon', iconBg, iconColor)}>{icon}</div>
-      <p className="text-sm text-white/50">{title}</p>
+      <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{title}</p>
       <div className="flex items-baseline gap-2 mt-1">
         {loading ? (
-          <Loader2 className="h-6 w-6 text-white/40 animate-spin" />
+          <Loader2 className="h-6 w-6 animate-spin" style={{ color: 'var(--text-tertiary)' }} />
         ) : (
           <>
-            <span className="stat-value text-white">{value}</span>
+            <span className="stat-value" style={{ color: 'var(--text)' }}>{value}</span>
             <span className={cn(
               'text-xs font-medium px-1.5 py-0.5 rounded-full',
-              positive ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+              positive ? 'change-positive' : 'change-negative'
             )}>
               {change}
             </span>
@@ -601,8 +675,8 @@ function ActionCard({
       <div className={cn('flex h-12 w-12 items-center justify-center rounded-2xl mb-4', iconBg, iconColor)}>
         {icon}
       </div>
-      <h3 className="font-semibold text-white">{title}</h3>
-      <p className="text-sm text-white/50 mt-1">{description}</p>
+      <h3 className="font-semibold" style={{ color: 'var(--text)' }}>{title}</h3>
+      <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>{description}</p>
     </div>
   );
 }
@@ -621,12 +695,12 @@ function ActivityItem({
 }) {
   return (
     <div className="activity-item">
-      <div className={cn('flex h-8 w-8 items-center justify-center rounded-lg text-white/70', iconBg)}>
+      <div className={cn('flex h-8 w-8 items-center justify-center rounded-lg', iconBg)} style={{ color: 'var(--text-secondary)' }}>
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm text-white/90 truncate">{title}</p>
-        <p className="text-xs text-white/40">{time}</p>
+        <p className="text-sm truncate" style={{ color: 'var(--text)' }}>{title}</p>
+        <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{time}</p>
       </div>
     </div>
   );
@@ -639,9 +713,9 @@ function PlaceholderView({ title, description }: { title: string; description: s
       <div className="flex h-16 w-16 items-center justify-center rounded-2xl gradient-bg mx-auto mb-4">
         <Globe className="h-8 w-8 text-white" />
       </div>
-      <h2 className="text-xl font-semibold text-white">{title}</h2>
-      <p className="text-white/50 mt-2 max-w-md mx-auto">{description}</p>
-      <p className="text-white/30 text-sm mt-4">Coming soon...</p>
+      <h2 className="text-xl font-semibold" style={{ color: 'var(--text)' }}>{title}</h2>
+      <p className="mt-2 max-w-md mx-auto" style={{ color: 'var(--text-secondary)' }}>{description}</p>
+      <p className="text-sm mt-4" style={{ color: 'var(--text-tertiary)' }}>Coming soon...</p>
     </div>
   );
 }

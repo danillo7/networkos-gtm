@@ -125,8 +125,8 @@ export function PitchesView() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-semibold text-white">Pitch Generator</h2>
-        <p className="text-sm text-white/50">
+        <h2 className="text-2xl font-semibold text-theme">Pitch Generator</h2>
+        <p className="text-sm text-theme-secondary">
           Create AI-powered personalized outreach content
         </p>
       </div>
@@ -136,31 +136,31 @@ export function PitchesView() {
         <div className="space-y-6">
           {/* Target Selection */}
           <div className="glass-card p-6">
-            <h3 className="text-sm font-medium text-white/80 mb-4 flex items-center gap-2">
+            <h3 className="text-sm font-medium text-theme/80 mb-4 flex items-center gap-2">
               <User className="h-4 w-4" />
               Target
             </h3>
 
             <div className="space-y-4">
               {/* Company */}
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/20">
-                  <Building2 className="h-5 w-5 text-blue-400" />
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-theme-tertiary">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg icon-bg-blue">
+                  <Building2 className="h-5 w-5 icon-color-blue" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-white">{SAMPLE_COMPANY.name}</p>
-                  <p className="text-xs text-white/50">{SAMPLE_COMPANY.industry} • {SAMPLE_COMPANY.size} employees</p>
+                  <p className="text-sm font-medium text-theme">{SAMPLE_COMPANY.name}</p>
+                  <p className="text-xs text-theme-secondary">{SAMPLE_COMPANY.industry} • {SAMPLE_COMPANY.size} employees</p>
                 </div>
               </div>
 
               {/* Contact */}
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white text-sm font-medium">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-theme-tertiary">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-theme text-sm font-medium">
                   SC
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-white">{SAMPLE_CONTACT.fullName}</p>
-                  <p className="text-xs text-white/50">{SAMPLE_CONTACT.title} • {SAMPLE_CONTACT.email}</p>
+                  <p className="text-sm font-medium text-theme">{SAMPLE_CONTACT.fullName}</p>
+                  <p className="text-xs text-theme-secondary">{SAMPLE_CONTACT.title} • {SAMPLE_CONTACT.email}</p>
                 </div>
               </div>
             </div>
@@ -168,7 +168,7 @@ export function PitchesView() {
 
           {/* Pitch Type */}
           <div className="glass-card p-6">
-            <h3 className="text-sm font-medium text-white/80 mb-4">Pitch Type</h3>
+            <h3 className="text-sm font-medium text-theme/80 mb-4">Pitch Type</h3>
             <div className="grid grid-cols-3 gap-2">
               {[
                 { id: 'email', label: 'Email', icon: Mail },
@@ -182,7 +182,7 @@ export function PitchesView() {
                     'flex flex-col items-center gap-2 p-4 rounded-xl border transition-all',
                     pitchType === type.id
                       ? 'bg-purple-500/20 border-purple-500/50 text-purple-400'
-                      : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
+                      : 'bg-theme-tertiary border-theme text-theme-secondary hover:bg-theme-tertiary'
                   )}
                 >
                   <type.icon className="h-5 w-5" />
@@ -194,14 +194,14 @@ export function PitchesView() {
 
           {/* Tone & Length */}
           <div className="glass-card p-6">
-            <h3 className="text-sm font-medium text-white/80 mb-4">Tone & Length</h3>
+            <h3 className="text-sm font-medium text-theme/80 mb-4">Tone & Length</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs text-white/50 mb-2 block">Tone</label>
+                <label className="text-xs text-theme-secondary mb-2 block">Tone</label>
                 <select
                   value={tone}
                   onChange={(e) => setTone(e.target.value)}
-                  className="w-full h-10 rounded-xl bg-white/5 border border-white/10 px-3 text-sm text-white"
+                  className="w-full h-10 rounded-xl bg-theme-tertiary border border-theme px-3 text-sm text-theme"
                 >
                   <option value="Professional">Professional</option>
                   <option value="Friendly">Friendly</option>
@@ -211,11 +211,11 @@ export function PitchesView() {
                 </select>
               </div>
               <div>
-                <label className="text-xs text-white/50 mb-2 block">Length</label>
+                <label className="text-xs text-theme-secondary mb-2 block">Length</label>
                 <select
                   value={length}
                   onChange={(e) => setLength(e.target.value as typeof length)}
-                  className="w-full h-10 rounded-xl bg-white/5 border border-white/10 px-3 text-sm text-white"
+                  className="w-full h-10 rounded-xl bg-theme-tertiary border border-theme px-3 text-sm text-theme"
                 >
                   <option value="short">Short (50-100 words)</option>
                   <option value="medium">Medium (100-200 words)</option>
@@ -227,7 +227,7 @@ export function PitchesView() {
 
           {/* Products Focus */}
           <div className="glass-card p-6">
-            <h3 className="text-sm font-medium text-white/80 mb-4">Products to Highlight</h3>
+            <h3 className="text-sm font-medium text-theme/80 mb-4">Products to Highlight</h3>
             <div className="space-y-2">
               {ELEVENLABS_PRODUCTS.map((product) => (
                 <button
@@ -237,20 +237,20 @@ export function PitchesView() {
                     'w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left',
                     selectedProducts.includes(product.id)
                       ? 'bg-purple-500/20 border-purple-500/50'
-                      : 'bg-white/5 border-white/10 hover:bg-white/10'
+                      : 'bg-theme-tertiary border-theme hover:bg-theme-tertiary'
                   )}
                 >
                   <div className={cn(
                     'flex h-8 w-8 items-center justify-center rounded-lg',
                     selectedProducts.includes(product.id)
                       ? 'bg-purple-500/30 text-purple-400'
-                      : 'bg-white/10 text-white/50'
+                      : 'bg-theme-tertiary text-theme-secondary'
                   )}>
                     <product.icon className="h-4 w-4" />
                   </div>
                   <span className={cn(
                     'text-sm font-medium',
-                    selectedProducts.includes(product.id) ? 'text-white' : 'text-white/70'
+                    selectedProducts.includes(product.id) ? 'text-theme' : 'text-theme-secondary'
                   )}>
                     {product.name}
                   </span>
@@ -285,7 +285,7 @@ export function PitchesView() {
         {/* Right Column - Generated Pitch */}
         <div className="glass-card p-6 flex flex-col min-h-[600px]">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-white/80 flex items-center gap-2">
+            <h3 className="text-sm font-medium text-theme/80 flex items-center gap-2">
               <MessageSquare className="h-4 w-4" />
               Generated Pitch
             </h3>
@@ -293,7 +293,7 @@ export function PitchesView() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleCopy}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-theme-tertiary hover:bg-theme-tertiary transition-colors text-theme-secondary hover:text-theme"
                 >
                   {copied ? (
                     <>
@@ -310,7 +310,7 @@ export function PitchesView() {
                 <button
                   onClick={handleGenerate}
                   disabled={loading}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-theme-tertiary hover:bg-theme-tertiary transition-colors text-theme-secondary hover:text-theme"
                 >
                   <RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} />
                   Regenerate
@@ -325,8 +325,8 @@ export function PitchesView() {
               <div className="flex-1 flex items-center justify-center">
                 <div className="text-center">
                   <Loader2 className="h-12 w-12 text-purple-400 animate-spin mx-auto mb-4" />
-                  <p className="text-white/70">Creating your personalized pitch...</p>
-                  <p className="text-sm text-white/40 mt-1">Analyzing company and contact data</p>
+                  <p className="text-theme-secondary">Creating your personalized pitch...</p>
+                  <p className="text-sm text-theme-tertiary mt-1">Analyzing company and contact data</p>
                 </div>
               </div>
             )}
@@ -335,8 +335,8 @@ export function PitchesView() {
               <div className="flex-1 flex items-center justify-center">
                 <div className="text-center">
                   <AlertCircle className="h-12 w-12 text-red-400 mx-auto mb-4" />
-                  <p className="text-white/70">Failed to generate pitch</p>
-                  <p className="text-sm text-white/40 mt-1">{error}</p>
+                  <p className="text-theme-secondary">Failed to generate pitch</p>
+                  <p className="text-sm text-theme-tertiary mt-1">{error}</p>
                   <button onClick={handleGenerate} className="btn-primary mt-4">
                     Try Again
                   </button>
@@ -348,10 +348,10 @@ export function PitchesView() {
               <div className="flex-1 flex items-center justify-center">
                 <div className="text-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-2xl gradient-bg mx-auto mb-4">
-                    <Wand2 className="h-8 w-8 text-white" />
+                    <Wand2 className="h-8 w-8 text-theme" />
                   </div>
-                  <p className="text-white/70">Configure your pitch and click Generate</p>
-                  <p className="text-sm text-white/40 mt-1">
+                  <p className="text-theme-secondary">Configure your pitch and click Generate</p>
+                  <p className="text-sm text-theme-tertiary mt-1">
                     AI will create a personalized message based on company research
                   </p>
                 </div>
@@ -362,16 +362,16 @@ export function PitchesView() {
               <div className="flex-1 flex flex-col">
                 {/* Subject Line (for emails) */}
                 {generatedPitch.subject && (
-                  <div className="mb-4 p-3 rounded-xl bg-white/5 border border-white/10">
-                    <label className="text-xs text-white/50 mb-1 block">Subject</label>
-                    <p className="text-white font-medium">{generatedPitch.subject}</p>
+                  <div className="mb-4 p-3 rounded-xl bg-theme-tertiary border border-theme">
+                    <label className="text-xs text-theme-secondary mb-1 block">Subject</label>
+                    <p className="text-theme font-medium">{generatedPitch.subject}</p>
                   </div>
                 )}
 
                 {/* Body */}
-                <div className="flex-1 p-4 rounded-xl bg-white/5 border border-white/10 overflow-auto">
+                <div className="flex-1 p-4 rounded-xl bg-theme-tertiary border border-theme overflow-auto">
                   <div className="prose prose-invert prose-sm max-w-none">
-                    <pre className="whitespace-pre-wrap font-sans text-sm text-white/90 leading-relaxed">
+                    <pre className="whitespace-pre-wrap font-sans text-sm text-theme/90 leading-relaxed">
                       {generatedPitch.body}
                     </pre>
                   </div>
@@ -379,8 +379,8 @@ export function PitchesView() {
 
                 {/* Products Used */}
                 {generatedPitch.elevenlabsProducts && generatedPitch.elevenlabsProducts.length > 0 && (
-                  <div className="mt-4 p-3 rounded-xl bg-white/5">
-                    <label className="text-xs text-white/50 mb-2 block">Products Referenced</label>
+                  <div className="mt-4 p-3 rounded-xl bg-theme-tertiary">
+                    <label className="text-xs text-theme-secondary mb-2 block">Products Referenced</label>
                     <div className="flex flex-wrap gap-2">
                       {generatedPitch.elevenlabsProducts.map((product, i) => (
                         <span
@@ -397,11 +397,11 @@ export function PitchesView() {
 
                 {/* Actions */}
                 <div className="mt-4 flex items-center gap-2">
-                  <button className="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white">
+                  <button className="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl bg-theme-tertiary hover:bg-theme-tertiary transition-colors text-theme-secondary hover:text-theme">
                     <Wand2 className="h-4 w-4" />
                     Improve
                   </button>
-                  <button className="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white">
+                  <button className="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl bg-theme-tertiary hover:bg-theme-tertiary transition-colors text-theme-secondary hover:text-theme">
                     <RefreshCw className="h-4 w-4" />
                     Generate Variants
                   </button>

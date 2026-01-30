@@ -176,8 +176,8 @@ export function ContactsView() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold text-white">Contacts</h2>
-          <p className="text-sm text-white/50">
+          <h2 className="text-2xl font-semibold text-theme">Contacts</h2>
+          <p className="text-sm text-theme-secondary">
             {contacts.length} contacts across {new Set(contacts.map((c) => c.company.id)).size} companies
           </p>
         </div>
@@ -190,7 +190,7 @@ export function ContactsView() {
       {/* Filters */}
       <div className="flex items-center gap-4 flex-wrap">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-theme-tertiary" />
           <input
             type="text"
             placeholder="Search contacts..."
@@ -210,13 +210,13 @@ export function ContactsView() {
                 'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
                 statusFilter === status
                   ? status === 'hot'
-                    ? 'bg-red-500/20 text-red-400'
+                    ? 'status-hot'
                     : status === 'warm'
-                    ? 'bg-orange-500/20 text-orange-400'
+                    ? 'status-warm'
                     : status === 'cold'
-                    ? 'bg-blue-500/20 text-blue-400'
-                    : 'bg-white/20 text-white'
-                  : 'bg-white/5 text-white/50 hover:bg-white/10'
+                    ? 'status-cold'
+                    : 'bg-theme-tertiary text-theme'
+                  : 'bg-theme-tertiary text-theme-secondary hover:bg-theme-tertiary'
               )}
             >
               {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -228,7 +228,7 @@ export function ContactsView() {
         <select
           value={seniorityFilter}
           onChange={(e) => setSeniorityFilter(e.target.value)}
-          className="h-9 rounded-xl bg-white/5 border border-white/10 px-3 text-sm text-white/80"
+          className="h-9 rounded-xl bg-theme-tertiary border border-theme px-3 text-sm text-theme"
         >
           <option value="all">All Seniority</option>
           <option value="C-Level">C-Level</option>
@@ -248,9 +248,9 @@ export function ContactsView() {
 
       {filteredContacts.length === 0 && (
         <div className="text-center py-12">
-          <User className="h-12 w-12 text-white/20 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-white/60">No contacts found</h3>
-          <p className="text-sm text-white/40 mt-1">
+          <User className="h-12 w-12 text-theme-tertiary mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-theme-secondary">No contacts found</h3>
+          <p className="text-sm text-theme-tertiary mt-1">
             Try adjusting your filters or search query
           </p>
         </div>
@@ -269,15 +269,15 @@ function ContactCard({ contact }: { contact: Contact }) {
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           {/* Avatar */}
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white font-medium">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-theme font-medium">
             {contact.firstName[0]}
             {contact.lastName[0]}
           </div>
           <div className="min-w-0">
-            <h3 className="font-semibold text-white truncate group-hover:text-purple-400 transition-colors">
+            <h3 className="font-semibold text-theme truncate group-hover:text-purple-400 transition-colors">
               {contact.fullName}
             </h3>
-            <p className="text-sm text-white/60 truncate">{contact.title}</p>
+            <p className="text-sm text-theme-secondary truncate">{contact.title}</p>
           </div>
         </div>
 
@@ -290,10 +290,10 @@ function ContactCard({ contact }: { contact: Contact }) {
               className={cn(
                 'flex items-center gap-1 px-2 py-1 rounded-lg text-sm font-medium border transition-colors',
                 contact.aiScore.overall >= 80
-                  ? 'bg-green-500/20 text-green-400 border-green-500/30'
+                  ? 'score-high border-green-500/30'
                   : contact.aiScore.overall >= 60
-                  ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
-                  : 'bg-red-500/20 text-red-400 border-red-500/30'
+                  ? 'score-medium border-yellow-500/30'
+                  : 'score-low border-red-500/30'
               )}
             >
               <Zap className="h-3.5 w-3.5" />
@@ -302,8 +302,8 @@ function ContactCard({ contact }: { contact: Contact }) {
 
             {/* Score Tooltip */}
             {showScoreTooltip && (
-              <div className="absolute right-0 top-full mt-2 z-10 w-48 p-3 rounded-xl bg-[#1c1c1e] border border-white/10 shadow-xl">
-                <p className="text-xs font-medium text-white/80 mb-2">Score Breakdown</p>
+              <div className="absolute right-0 top-full mt-2 z-10 w-48 p-3 rounded-xl dropdown-bg border border-theme shadow-xl">
+                <p className="text-xs font-medium text-theme mb-2">Score Breakdown</p>
                 <div className="space-y-2">
                   <ScoreRow label="Company Fit" value={contact.aiScore.companyFit} />
                   <ScoreRow label="Voice AI Opp" value={contact.aiScore.voiceAIOpp} />
@@ -318,32 +318,32 @@ function ContactCard({ contact }: { contact: Contact }) {
 
       {/* Company */}
       <div className="flex items-center gap-2 mb-4 text-sm">
-        <Building2 className="h-4 w-4 text-white/40" />
-        <span className="text-white/70">{contact.company.name}</span>
+        <Building2 className="h-4 w-4 text-theme-tertiary" />
+        <span className="text-theme-secondary">{contact.company.name}</span>
       </div>
 
       {/* Status & Badges */}
       <div className="flex flex-wrap gap-2 mb-4">
         <LeadStatusBadge status={contact.leadStatus} />
         {contact.decisionMaker && (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-500/20 text-purple-400">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium icon-bg-purple icon-color-purple">
             Decision Maker
           </span>
         )}
         {contact.influencer && (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium icon-bg-blue icon-color-blue">
             Influencer
           </span>
         )}
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-between pt-4 border-t border-white/10">
+      <div className="flex items-center justify-between pt-4 border-t border-theme">
         <div className="flex items-center gap-2">
           {contact.email && (
             <a
               href={`mailto:${contact.email}`}
-              className="p-2 rounded-lg hover:bg-white/10 transition-colors text-white/60 hover:text-white"
+              className="p-2 rounded-lg hover:bg-theme-tertiary transition-colors text-theme-secondary hover:text-theme"
               title="Send Email"
             >
               <Mail className="h-4 w-4" />
@@ -354,7 +354,7 @@ function ContactCard({ contact }: { contact: Contact }) {
               href={contact.linkedinUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-lg hover:bg-white/10 transition-colors text-white/60 hover:text-white"
+              className="p-2 rounded-lg hover:bg-theme-tertiary transition-colors text-theme-secondary hover:text-theme"
               title="View LinkedIn"
             >
               <Linkedin className="h-4 w-4" />
@@ -363,7 +363,7 @@ function ContactCard({ contact }: { contact: Contact }) {
           {contact.phone && (
             <a
               href={`tel:${contact.phone}`}
-              className="p-2 rounded-lg hover:bg-white/10 transition-colors text-white/60 hover:text-white"
+              className="p-2 rounded-lg hover:bg-theme-tertiary transition-colors text-theme-secondary hover:text-theme"
               title="Call"
             >
               <Phone className="h-4 w-4" />
@@ -383,9 +383,9 @@ function ContactCard({ contact }: { contact: Contact }) {
 // Lead Status Badge
 function LeadStatusBadge({ status }: { status: 'hot' | 'warm' | 'cold' }) {
   const styles = {
-    hot: 'bg-red-500/20 text-red-400',
-    warm: 'bg-orange-500/20 text-orange-400',
-    cold: 'bg-blue-500/20 text-blue-400',
+    hot: 'status-hot',
+    warm: 'status-warm',
+    cold: 'status-cold',
   };
 
   return (
@@ -399,9 +399,9 @@ function LeadStatusBadge({ status }: { status: 'hot' | 'warm' | 'cold' }) {
 function ScoreRow({ label, value }: { label: string; value: number }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-xs text-white/50">{label}</span>
+      <span className="text-xs text-theme-secondary">{label}</span>
       <div className="flex items-center gap-2">
-        <div className="w-16 h-1.5 rounded-full bg-white/10 overflow-hidden">
+        <div className="w-16 h-1.5 rounded-full bg-theme-tertiary overflow-hidden">
           <div
             className={cn(
               'h-full rounded-full',
@@ -410,7 +410,7 @@ function ScoreRow({ label, value }: { label: string; value: number }) {
             style={{ width: `${value}%` }}
           />
         </div>
-        <span className="text-xs text-white/70 w-8 text-right">{value}</span>
+        <span className="text-xs text-theme-secondary w-8 text-right">{value}</span>
       </div>
     </div>
   );
